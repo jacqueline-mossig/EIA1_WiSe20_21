@@ -1,0 +1,110 @@
+body{
+    background-color: #666666;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #000000;
+    font-size: 1em;
+}
+main{
+    border: thin solid #ffffff;
+    clear:both;
+    padding-top: 3%;
+    padding-bottom: 3%;
+}
+h1{
+    font-family: 'Brush Script MT', 'Mystery Quest', Arial, cursive;
+    color: #ffffff;
+    text-decoration-line: underline;
+    margin-top: auto;
+    font-size: 4em;
+    margin-bottom: auto;
+    text-align: center;
+    text-shadow: 2px 1px #000000;
+}
+p, #computer, #player, #rounds{
+    font-family: 'Brush Script MT', 'Mystery Quest', Arial, cursive;
+    color: #ffffff;
+    margin-top: auto;
+    text-align: center;
+    font-size: 2em;
+    margin-bottom: auto;
+    text-shadow: 2px 1px #000000;
+}
+
+#computer, #player{
+    clear:both;
+    background-color: #333333;
+    border: thin solid #ffffff;
+    margin-left: 4.3%;
+    padding: 10px;
+    height: 43px;
+    width: 90%;
+}
+
+#field{
+    float: left;
+    height: 350px;
+    width: 65%;
+    border-radius: 10%;
+    box-shadow: 0 3px 10px #000000;
+    border-radius: 11px;
+    margin: 2%;
+    margin-left: 4.3%;
+}
+
+#rounds{
+    position: relative;
+    background-color: #333333;
+    border: thin solid #ffffff;
+    margin-top: 13.5%;
+    margin-left: 79%;
+    padding: 10px;
+    height: 43px;
+    width: 10%;
+}
+
+/* img{
+    border-radius: 10%;
+    box-shadow: 0 3px 10px #000000;
+    height: 100%;
+    image-orientation: from-image;
+    margin-left: 1.7%;
+} */
+
+.platzhalter1{
+    float: left;
+    /* clear: left; */
+    border-radius: 10%;
+    box-shadow: 0 3px 10px #000000;
+    height: 30%;
+    width: 13%;
+    image-orientation: from-image;
+    margin-left: 15%;
+    margin-top: 1%;
+    background-color: rgb(194, 191, 191);
+}
+
+.card{
+    width: 105px;
+    height: 105px;
+    background-size: 105px;
+    border-radius: 10%;
+    background-color: black;
+}
+
+.card [aria-label="x"] {
+    width: 100px;
+    height: 100px;
+    background-image: url("GreenClubs1.jpg");
+    background-size: 100px;
+    border-radius: 10%;
+}
+
+.card [aria-label="o"]{
+    width: 100px;
+    height: 100px;
+    background-image: url("BlueSpades1.jpg");
+    background-size: 100px;
+    border-radius: 10%;
+}
+
+/* [aria-label="x"] [aria-label="o"] */
