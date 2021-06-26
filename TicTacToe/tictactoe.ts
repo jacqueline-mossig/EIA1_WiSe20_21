@@ -5,10 +5,10 @@ window.addEventListener("load", startGame);
 let severity: string;
 let d: string;
 
-let game: HTMLDivElement[] = []; //Array entsteht während des Spieles
-let auswertung: HTMLDivElement[] = [];
+let game: HTMLDivElement[] = [];            //Array für den Schwierigkeitsgrad
+let auswertung: HTMLDivElement[] = [];      //Array für die Auswertung des Spielfeldes
 
-let cardDiv: HTMLDivElement;
+let untakenDiv: HTMLDivElement;
 
 let pointsBeginning: number = 0;
 let pointsToGet: number = 1;
@@ -34,12 +34,13 @@ function showCards(_userInput: string): void {
             field.innerHTML = "";
 
             for (let i: number = 0; i < 9; i++) {
-            cardDiv = document.createElement("div");
-            cardDiv.setAttribute("class", "platzhalter1");
-            field.appendChild(cardDiv);
-            cardDiv.addEventListener("click", playerTurn);
-            game.push(cardDiv);
-            auswertung.push(cardDiv);
+            untakenDiv = document.createElement("div");
+            untakenDiv.setAttribute("class", "platzhalter1");
+            field.appendChild(untakenDiv);
+            game.push(untakenDiv);
+            // untakenDiv.addEventListener("click", playerTurn);
+            untakenDiv.addEventListener("click", function(): void {playerTurn (i, untakenDiv); });
+            // auswertung.push(untakenDiv);
             }
 
             console.log("Die Platzhalter werden erstellt");
@@ -67,41 +68,45 @@ function showPoints(): void {
     console.log("Die Punkte des Computers werden angezeigt.", pointsBeginning);
 }
 
-function playerTurn(_event: MouseEvent): void {
-    let newCarddDiv: HTMLDivElement = <HTMLDivElement>document.createElement("div");
-    newCarddDiv.setAttribute("card", "x");
-    newCarddDiv.setAttribute("disabled", "disabled");
-    let target: Node = <Node>_event.target;
-    target.appendChild(newCarddDiv);
-    let indexOfNewDiv: number;
-    indexOfNewDiv = game.indexOf(newCarddDiv);
-    game.splice(indexOfNewDiv, 1);
-    auswertung.splice(indexOfNewDiv, 1, newCarddDiv);
+function playerTurn(_placeholderNumber: number, _placeholderDiv: HTMLDivElement): void {
+    let playerCard: HTMLDivElement = <HTMLDivElement>document.createElement("div");
+    playerCard.setAttribute("class", "cardPlayer");
+    playerCard.setAttribute("disabled", "disabled");
+    // let target: Node = <Node>_event.target;
+    // target.appendChild(playerCard);
+    console.log(_placeholderNumber, "geklickter Platzhalter als Nummer");
+    console.log(_placeholderDiv, "geklickter Platzhalter als Div");
+    _placeholderDiv.appendChild(playerCard);
     
-    console.log(newCarddDiv);
+    game.splice(_placeholderNumber, 1, playerCard);
+    // auswertung.splice(indexOfTakenDiv, 1, playerCard);
+
+    console.log("game", game);
     console.log("Spielstein von Spieler gelegt");
 
     checkAllLines();
-    setTimeout(computerTurn, 1000);
+    setTimeout(computerTurn, 500);
 }
 
 function computerTurn(): void {
     let randomDiv: HTMLDivElement;
     randomDiv = game[Math.floor(Math.random() * game.length)];
     
-    let newCardDiv: HTMLDivElement = <HTMLDivElement>document.createElement("div");
-    newCardDiv.setAttribute("card", "o");
-    newCardDiv.setAttribute("disabled", "disabled");
-    randomDiv.appendChild(newCardDiv);
-    let indexOfNewDiv: number;
-    indexOfNewDiv = game.indexOf(newCardDiv);
-    game.splice(indexOfNewDiv, 1);
-    auswertung.splice(indexOfNewDiv, 1, newCardDiv);
+    let computerCard: HTMLDivElement = <HTMLDivElement>document.createElement("div");
+    computerCard.setAttribute("class", "cardComputer");
+    computerCard.setAttribute("disabled", "disabled");
+    randomDiv.appendChild(computerCard);
 
-    console.log(newCardDiv);
+    let indexOfTakenDiv: number;
+    indexOfTakenDiv = game.indexOf(randomDiv);
+    game.splice(indexOfTakenDiv, 1, computerCard);
+    // auswertung.splice(indexOfTakenDiv, 1, computerCard);
+
+    console.log("game", game);
     console.log("Spielstein von Computer gelegt");
 
-    checkAllLines();
+    // untakenDiv.removeEventListener("click", function(): void {playerTurn(i, untakenDiv); }, false);
+    // checkAllLines();
 }
 
 function checkAllLines(): void {
@@ -109,68 +114,75 @@ function checkAllLines(): void {
     check = true;
 
     //Prüft, ob alle Felder makiert sind
-    for (let i: number = 0; i < auswertung.length; i++) {
-        if (!auswertung[i].hasAttribute("disabled")) {
+    for (let i: number = 0; i < game.length; i++) {
+        if (!game[i].hasAttribute("disabled")) {
         check = false;
-        console.log("Spiel geht weiter");
-        checkSingleLines();
+        console.log("Runde geht weiter");
+        console.log("shdshd", game);
+        // checkSingleLines();
+        break;
         }
 
         if (check) {
-        console.log("Ende des Spieles");
+        console.log("Ende der Runde");
+        // roundEndTied();
     }
     }
 }
 
-function checkSingleLines(): void {
-    switch (severity) {                          
-        case "easy":
-            let i: number = 0;
+// function roundEndTied(): void {
+//     setTimeout(function(): void {window.alert("Diese Runde ist unentschieden."); startGame(); }, 500);
+// }
 
-            // Prüft, ob eine der Reihen passt
-            for (i = 0; i < 3; i++) {
+// function checkSingleLines(): void {
+//     switch (severity) {                          
+//         case "easy":
+//             let i: number = 0;
 
-            // 3 senkrecht
-            if (auswertung[0 + i].getAttribute("aria-label") != ""
-            && auswertung[0 + i].getAttribute("aria-label") == auswertung[3 + i].getAttribute("aria-label")
-            && auswertung[3 + i].getAttribute("aria-label") == auswertung[6 + i].getAttribute("aria-label")
-            ) {
-            winner = game[0 + i].getAttribute("aria-label");
-            console.log("Ende des Spieles");
-            }
+//             // Prüft, ob eine der Reihen passt
+//             for (i = 0; i < 3; i++) {
 
-            // 3 waagrecht
-            if (auswertung[i * 3].getAttribute("aria-label") != ""
-            && auswertung[i * 3].getAttribute("aria-label") == auswertung[i * 3 + 1].getAttribute("aria-label")
-            && auswertung[i * 3 + 1].getAttribute("aria-label") == auswertung[i * 3 + 2].getAttribute("aria-label")
-            ) {
-            winner = auswertung[i * 3].getAttribute("aria-label");
-            console.log("Ende des Spieles");
-            }
+//             // 3 senkrecht
+//             if (auswertung[0 + i].getAttribute("aria-label") != ""
+//             && auswertung[0 + i].getAttribute("aria-label") == auswertung[3 + i].getAttribute("aria-label")
+//             && auswertung[3 + i].getAttribute("aria-label") == auswertung[6 + i].getAttribute("aria-label")
+//             ) {
+//             winner = game[0 + i].getAttribute("aria-label");
+//             console.log("Ende des Spieles");
+//             }
 
-            // diagonal links oben nach rechts unten
-            if (auswertung[0].getAttribute("aria-label") != ""
-            && auswertung[0].getAttribute("aria-label") == auswertung[4].getAttribute("aria-label")
-            && auswertung[4].getAttribute("aria-label") == auswertung[8].getAttribute("aria-label")
-            ) {
-            winner = auswertung[0].getAttribute("aria-label");
-            console.log("Ende des Spieles");
-            }
+//             // 3 waagrecht
+//             if (auswertung[i * 3].getAttribute("aria-label") != ""
+//             && auswertung[i * 3].getAttribute("aria-label") == auswertung[i * 3 + 1].getAttribute("aria-label")
+//             && auswertung[i * 3 + 1].getAttribute("aria-label") == auswertung[i * 3 + 2].getAttribute("aria-label")
+//             ) {
+//             winner = auswertung[i * 3].getAttribute("aria-label");
+//             console.log("Ende des Spieles");
+//             }
 
-            // diagonal rechts oben nach links unten
-            if (auswertung[2].getAttribute("aria-label") != ""
-            && auswertung[2].getAttribute("aria-label") == auswertung[4].getAttribute("aria-label")
-            && auswertung[4].getAttribute("aria-label") == auswertung[6].getAttribute("aria-label")
-            ) {
-            winner = auswertung[2].getAttribute("aria-label");
-            console.log("Ende des Spieles");
-            }
+//             // diagonal links oben nach rechts unten
+//             if (auswertung[0].getAttribute("aria-label") != ""
+//             && auswertung[0].getAttribute("aria-label") == auswertung[4].getAttribute("aria-label")
+//             && auswertung[4].getAttribute("aria-label") == auswertung[8].getAttribute("aria-label")
+//             ) {
+//             winner = auswertung[0].getAttribute("aria-label");
+//             console.log("Ende des Spieles");
+//             }
 
-            else {
-            console.log("...");
-            }
-}
-}
+//             // diagonal rechts oben nach links unten
+//             if (auswertung[2].getAttribute("aria-label") != ""
+//             && auswertung[2].getAttribute("aria-label") == auswertung[4].getAttribute("aria-label")
+//             && auswertung[4].getAttribute("aria-label") == auswertung[6].getAttribute("aria-label")
+//             ) {
+//             winner = auswertung[2].getAttribute("aria-label");
+//             console.log("Ende des Spieles");
+//             }
+
+//             else {
+//             console.log("...");
+//             }
+// }
+// }
 }
 
 // function RoundEndWinner(_winInput: string): void {
@@ -185,10 +197,6 @@ function checkSingleLines(): void {
 //                 setTimeout(function(): void {window.alert("Der Computer hat diese Runde gewonnen!"); startGame(); }, 500);
 //                 ComputergetsPoint();
 //             }
-// }
-
-// function RoundEndTied(_tiedInput: string): void {
-//      setTimeout(function(): void {window.alert("Diese Runde ist unentschieden."); startGame(); }, 500);
 // }
 
 // function showSolution(_cells): void {
@@ -209,4 +217,5 @@ function checkSingleLines(): void {
 //     pointsComputer.innerHTML += + pointsBeginning;
 // }
 
-}
+// }
+

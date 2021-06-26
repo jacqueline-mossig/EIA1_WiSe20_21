@@ -77,34 +77,28 @@ p, #computer, #player, #rounds{
     box-shadow: 0 3px 10px #000000;
     height: 30%;
     width: 13%;
+    /* width: 100px;
+    height: 100px; */
     image-orientation: from-image;
     margin-left: 15%;
     margin-top: 1%;
     background-color: rgb(194, 191, 191);
 }
 
-.card{
-    width: 105px;
-    height: 105px;
-    background-size: 105px;
+.cardPlayer {
     border-radius: 10%;
-    background-color: black;
-}
-
-.card [aria-label="x"] {
-    width: 100px;
-    height: 100px;
+    height: 100%;
+    width: 100%;
     background-image: url("GreenClubs1.jpg");
-    background-size: 100px;
-    border-radius: 10%;
+    background-size: 100%;
 }
 
-.card [aria-label="o"]{
-    width: 100px;
-    height: 100px;
-    background-image: url("BlueSpades1.jpg");
-    background-size: 100px;
+.cardComputer {
     border-radius: 10%;
+    height: 100%;
+    width: 100%;
+    background-image: url("BlueSpades1.jpg");
+    background-size: 100%;
 }
 
 /* [aria-label="x"] [aria-label="o"] */
