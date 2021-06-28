@@ -4,12 +4,14 @@ body{
     color: #000000;
     font-size: 1em;
 }
+
 main{
     border: thin solid #ffffff;
     clear:both;
     padding-top: 3%;
     padding-bottom: 3%;
 }
+
 h1{
     font-family: 'Brush Script MT', 'Mystery Quest', Arial, cursive;
     color: #ffffff;
@@ -20,7 +22,8 @@ h1{
     text-align: center;
     text-shadow: 2px 1px #000000;
 }
-p, #computer, #player, #rounds{
+
+p, #computer, #player, #round{
     font-family: 'Brush Script MT', 'Mystery Quest', Arial, cursive;
     color: #ffffff;
     margin-top: auto;
@@ -42,7 +45,7 @@ p, #computer, #player, #rounds{
 
 #field{
     float: left;
-    height: 350px;
+    height: 580px;
     width: 65%;
     border-radius: 10%;
     box-shadow: 0 3px 10px #000000;
@@ -51,7 +54,7 @@ p, #computer, #player, #rounds{
     margin-left: 4.3%;
 }
 
-#rounds{
+#round{
     position: relative;
     background-color: #333333;
     border: thin solid #ffffff;
@@ -62,43 +65,46 @@ p, #computer, #player, #rounds{
     width: 10%;
 }
 
-/* img{
-    border-radius: 10%;
-    box-shadow: 0 3px 10px #000000;
-    height: 100%;
-    image-orientation: from-image;
-    margin-left: 1.7%;
-} */
-
-.platzhalter1{
+.platzhalterEasy, .platzhalterMiddle, .platzhalterDifficult{
     float: left;
-    /* clear: left; */
     border-radius: 10%;
     box-shadow: 0 3px 10px #000000;
-    height: 30%;
-    width: 13%;
-    /* width: 100px;
-    height: 100px; */
     image-orientation: from-image;
-    margin-left: 15%;
-    margin-top: 1%;
     background-color: rgb(194, 191, 191);
 }
 
-.cardPlayer {
+.platzhalterEasy{
+    height: 28%;
+    width: 20%;
+    margin-left: 9.8%;
+    margin-top: 3%;
+}
+
+.platzhalterMiddle{
+    height: 21%;
+    width: 15%;
+    margin-left: 7.8%;
+    margin-top: 2.3%;
+}
+
+.platzhalterDifficult{
+    height: 18.1%;
+    width: 13%;
+    margin-left: 5.7%;
+    margin-top: 1.1%;
+}
+
+.cardPlayer, .cardComputer {
     border-radius: 10%;
     height: 100%;
     width: 100%;
-    background-image: url("GreenClubs1.jpg");
     background-size: 100%;
+}
+
+.cardPlayer{
+    background-image: url("GreenClubs1.jpg");
 }
 
 .cardComputer {
-    border-radius: 10%;
-    height: 100%;
-    width: 100%;
     background-image: url("BlueSpades1.jpg");
-    background-size: 100%;
 }
-
-/* [aria-label="x"] [aria-label="o"] */
