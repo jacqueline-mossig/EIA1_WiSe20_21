@@ -121,8 +121,9 @@ var tictactoe;
                 break;
             }
             if (check) {
+                winner = "tied";
                 console.log("Ende der Runde");
-                setTimeout(roundEnd, 500);
+                // roundEnd();
                 break;
             }
         }
@@ -209,49 +210,44 @@ var tictactoe;
                 }
         }
     }
-    function roundEnd() {
-        pointsRound = document.getElementById("round");
-        pointsRound.innerHTML = "Runde:" + pointsToGet;
-        for (let i = 0; i <= severityLength; i++) {
-            switch (winner) {
-                case "winPlayer":
-                    if ("player") {
-                        // hint.className = "success";	
-                        setTimeout(function () { window.alert("Du hast diese Runde gewonnen!"); showCards(severity); }, 500);
-                        //Spieler bekommt einen Punkt
-                        pointsPlayer.innerHTML = "Dein Punktestand: ";
-                        pointsBeginning += pointsToGet;
-                        pointsPlayer.innerHTML += +pointsBeginning;
-                    }
-                case "winComputer":
-                    if ("computer") {
-                        setTimeout(function () { window.alert("Der Computer hat diese Runde gewonnen!"); showCards(severity); }, 500);
-                        //Computer bekommt einen Punkt
-                        pointsComputer.innerHTML = "Computer Punktestand: ";
-                        pointsBeginning += pointsToGet;
-                        pointsComputer.innerHTML += +pointsBeginning;
-                    }
-                    else {
-                        setTimeout(function () { window.alert("Diese Runde ist unentschieden."); showCards(severity); }, 500);
-                    }
-            }
-            gameEnd();
-        }
-    }
-    function gameEnd() {
-        switch (winner) {
-            case "winPlayer":
-                if (pointsPlayer > pointsComputer) {
-                    setTimeout(function () { window.alert("Du hast dieses Spiel gewonnen!"); startGame(); }, 500);
-                }
-            case "winComputer":
-                if (pointsPlayer < pointsComputer) {
-                    setTimeout(function () { window.alert("Der Computer hat dieses Spiel gewonnen!"); startGame(); }, 500);
-                }
-                else {
-                    setTimeout(function () { window.alert("Dieses Spiel geht unentschieden aus!"); startGame(); }, 500);
-                }
-        }
-    }
+    // function roundEnd(): void {
+    //     //Neue Runde wird angezeigt
+    //     pointsRound.innerHTML = "Runde: ";
+    //     pointsBeginning += pointsToGet; 
+    //     pointsRound.innerHTML += + pointsBeginning;
+    //     for (let i: number = 0; i <= severityLength; i++) {
+    //         switch (winner) {                         
+    //             case "player":
+    //                     //Spieler bekommt einen Punkt
+    //                     pointsPlayer.innerHTML = "Dein Punktestand: ";
+    //                     pointsBeginning += pointsToGet; 
+    //                     pointsPlayer.innerHTML += + pointsBeginning;
+    //                     setTimeout(function(): void {window.alert("Du hast diese Runde gewonnen!"); showCards(severity); }, 500);
+    //                     break;
+    //             case "computer":
+    //                     //Computer bekommt einen Punkt
+    //                     pointsComputer.innerHTML = "Computer Punktestand: ";
+    //                     pointsBeginning += pointsToGet; 
+    //                     pointsComputer.innerHTML += + pointsBeginning;
+    //                     setTimeout(function(): void {window.alert("Der Computer hat diese Runde gewonnen!"); showCards(severity); }, 500);
+    //                     break;
+    //             default:
+    //                 setTimeout(function(): void {window.alert("Diese Runde ist unentschieden."); showCards(severity); }, 500);
+    //                 break;
+    //         }
+    //         gameEnd();
+    //     }
+    // }
+    // function gameEnd(): void {
+    //     if (pointsPlayer > pointsComputer) {
+    //         setTimeout(function(): void {window.alert("Du hast dieses Spiel gewonnen!"); startGame(); }, 500);
+    //     }
+    //     if (pointsPlayer < pointsComputer) {
+    //         setTimeout(function(): void {window.alert("Der Computer hat dieses Spiel gewonnen!"); startGame(); }, 500);
+    //     }
+    //     else {
+    //         setTimeout(function(): void {window.alert("Dieses Spiel geht unentschieden aus!"); startGame(); }, 500);
+    //     }
+    // }
 })(tictactoe || (tictactoe = {}));
 //# sourceMappingURL=tictactoe.js.map
