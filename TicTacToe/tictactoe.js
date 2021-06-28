@@ -89,7 +89,7 @@ var tictactoe;
         console.log("game", game);
         console.log("Spielstein von Spieler gelegt");
         // untakenDiv.removeEventListener("click", function(): void {playerTurn (i, game[i]); });
-        // checkAllLines();
+        checkAllLines();
         setTimeout(computerTurn, 500);
     }
     function computerTurn() {

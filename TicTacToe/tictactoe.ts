@@ -113,7 +113,7 @@ function playerTurn(_placeholderNumber: number, _placeholderDiv: HTMLDivElement)
     console.log("Spielstein von Spieler gelegt");
 
     // untakenDiv.removeEventListener("click", function(): void {playerTurn (i, game[i]); });
-    // checkAllLines();
+    checkAllLines();
     setTimeout(computerTurn, 500);
 }
 
