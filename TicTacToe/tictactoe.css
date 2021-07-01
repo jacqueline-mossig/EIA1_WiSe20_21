@@ -70,7 +70,7 @@ p, #computer, #player, #round{
     border-radius: 10%;
     box-shadow: 0 3px 10px #000000;
     image-orientation: from-image;
-    background-color: rgb(194, 191, 191);
+    background-color: #BFBFC2;
 }
 
 .platzhalterEasy{
@@ -102,9 +102,9 @@ p, #computer, #player, #round{
 }
 
 .cardPlayer{
-    background-image: url("GreenClubs1.jpg");
+    background-image: url("playerCard.jpg");
 }
 
 .cardComputer {
-    background-image: url("BlueSpades1.jpg");
+    background-image: url("computerCard.jpg");
 }
