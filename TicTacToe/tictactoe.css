@@ -58,11 +58,20 @@ p, #computer, #player, #round{
     position: relative;
     background-color: #333333;
     border: thin solid #ffffff;
-    margin-top: 23%;
+    margin-top: 21%;
     margin-left: 79%;
     padding: 10px;
-    height: 43px;
+    height: 70px;
     width: 10%;
+}
+
+.test {
+    position: relative;
+    float: left;
+    margin-top: 10%;
+    margin-left: 5%;
+    height: 10px;
+    width: 90%;
 }
 
 .placeholderEasy, .placeholderMiddle, .placeholderDifficult{
