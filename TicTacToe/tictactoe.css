@@ -58,14 +58,14 @@ p, #computer, #player, #round{
     position: relative;
     background-color: #333333;
     border: thin solid #ffffff;
-    margin-top: 13.5%;
+    margin-top: 23%;
     margin-left: 79%;
     padding: 10px;
     height: 43px;
     width: 10%;
 }
 
-.platzhalterEasy, .platzhalterMiddle, .platzhalterDifficult{
+.placeholderEasy, .placeholderMiddle, .placeholderDifficult{
     float: left;
     border-radius: 10%;
     box-shadow: 0 3px 10px #000000;
@@ -73,21 +73,21 @@ p, #computer, #player, #round{
     background-color: #BFBFC2;
 }
 
-.platzhalterEasy{
+.placeholderEasy{
     height: 28%;
     width: 20%;
     margin-left: 9.8%;
     margin-top: 3%;
 }
 
-.platzhalterMiddle{
+.placeholderMiddle{
     height: 21%;
     width: 15%;
     margin-left: 7.8%;
     margin-top: 2.3%;
 }
 
-.platzhalterDifficult{
+.placeholderDifficult{
     height: 18.1%;
     width: 13%;
     margin-left: 5.7%;

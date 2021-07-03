@@ -9,21 +9,26 @@ var tictactoe;
     let untakenDiv; //Platzalter, die zu Beginn erstellt werden
     let emtpyDiv; //Platzhalter, die aus dem Array genommen werden
     let pointsBeginning = 0; //Punkteanzahl des Spielers und Computers zu Beginn des Spieles
-    let pointsToGet = 1; //dient dem Erhöhen der Punkte- bzw. Rundenanzahl
+    let pointsToGet = 1; //dient dem Erhöhen der Punkteanzahl
     let pointsPlayer; //Punkte des Spielers
     let pointsComputer; //Punkte des Computers
     let pointsRound; //Rundenanzahl
     let winner; //enthält die Informationen, wie das Spiel ausgeht
     let computerTurnNumber = 0; //Absicherung für den Zug des Computers
+    let a;
+    let b;
+    let c;
+    let d;
+    let e;
     // Fragt den Spieler, mit welchem Schwierigkeitsgrad er spielen möchte 
     function startGame() {
         console.log("Das Spiel wird gestartet.");
         severity = String(window.prompt("Mit welchem Schwierigkeitsgrad möchtest du spielen? Wähle zwischen 'easy', 'middle' oder 'difficult'!"));
-        showCards(severity);
+        showPlaceholders(severity);
         showPoints();
     }
     // Erstellt die Platzhalter angepasst an den Schwierigkeitsgrad
-    function showCards(_userInput) {
+    function showPlaceholders(_userInput) {
         switch (severity) {
             case "easy":
                 severityLength = 3;
@@ -31,7 +36,7 @@ var tictactoe;
                 fieldEasy.innerHTML = "";
                 for (let i = 0; i < 9; i++) {
                     untakenDiv = document.createElement("div");
-                    untakenDiv.setAttribute("class", "platzhalterEasy");
+                    untakenDiv.setAttribute("class", "placeholderEasy");
                     fieldEasy.appendChild(untakenDiv);
                     game.push(untakenDiv);
                     existingPlaceholder.push(untakenDiv);
@@ -46,7 +51,7 @@ var tictactoe;
                 fieldMiddle.innerHTML = "";
                 for (let i = 0; i < 16; i++) {
                     untakenDiv = document.createElement("div");
-                    untakenDiv.setAttribute("class", "platzhalterMiddle");
+                    untakenDiv.setAttribute("class", "placeholderMiddle");
                     fieldMiddle.appendChild(untakenDiv);
                     game.push(untakenDiv);
                     existingPlaceholder.push(untakenDiv);
@@ -61,7 +66,7 @@ var tictactoe;
                 fieldDifficult.innerHTML = "";
                 for (let i = 0; i < 25; i++) {
                     untakenDiv = document.createElement("div");
-                    untakenDiv.setAttribute("class", "platzhalterDifficult");
+                    untakenDiv.setAttribute("class", "placeholderDifficult");
                     fieldDifficult.appendChild(untakenDiv);
                     game.push(untakenDiv);
                     existingPlaceholder.push(untakenDiv);
@@ -103,7 +108,7 @@ var tictactoe;
             console.log("existingPlaceholder", existingPlaceholder);
             console.log("game", game);
             console.log("Spielstein von Spieler gelegt");
-            checkLines();
+            checkLinesForAllSeverity();
             setTimeout(computerTurn, 500);
         }
     }
@@ -127,11 +132,11 @@ var tictactoe;
         game.splice(indexOfTakenDiv, 1, computerCard);
         existingPlaceholder[indexOfTakenDiv] = emtpyDiv;
         console.log("Spielstein von Computer gelegt");
-        // checkLines();
+        checkLinesForAllSeverity();
     }
     // Überprüft, ob die einzelnen Reihen mit nur einer Art von Spielkarte gefüllt sind
     // Dabei werden je nach Schwierigkeitsgrad die einzelnen Möglichkeiten überprüft und dementsprechend die Runde weitergeführt oder beendet
-    function checkLines() {
+    function checkLinesForAllSeverity() {
         switch (severity) {
             case "easy":
                 let winningConditionsEasy = [
@@ -144,50 +149,19 @@ var tictactoe;
                     [0, 4, 8],
                     [2, 4, 6]
                 ];
-                let roundWonEasy = false;
                 for (let i = 0; i <= 7; i++) {
                     let winCondition = winningConditionsEasy[i];
-                    let a = game[winCondition[0]];
-                    let b = game[winCondition[1]];
-                    let c = game[winCondition[2]];
+                    a = game[winCondition[0]];
+                    b = game[winCondition[1]];
+                    c = game[winCondition[2]];
                     console.log("test", a, b, c);
                     if (a.getAttribute("taken") && b.getAttribute("taken") && c.getAttribute("taken")) {
                         console.log("Reihe ist voll");
-                        continue;
+                        checkLinesEasy();
                     }
-                    if (a.getAttribute("playerCard") && b.getAttribute("playerCard") && c.getAttribute("playerCard")
-                        || a.getAttribute("ComputerCard") && b.getAttribute("ComputerCard") && c.getAttribute("ComputerCard")) {
-                        roundWonEasy = true;
-                        console.log("Reihe ist voll mit einer Art Spielkarten");
-                        break;
-                    }
-                    if (a.getAttribute("playerCard") && b.getAttribute("playerCard") && c.getAttribute("playerCard")) {
-                        winner = "player";
-                        console.log("Runde ist vorbei. Der Spieler hat gewonnen");
-                        // roundEnd(winner);
-                    }
-                    if (a.getAttribute("computerCard") && b.getAttribute("computerCard") && c.getAttribute("computerCard")) {
-                        winner = "computer";
-                        console.log("Runde ist vorbei. Der Computer hat gewonnen");
-                        // roundEnd(winner);
-                    }
-                    else {
-                        winner = "tied";
-                        console.log("Runde ist vorbei. Es ist unentschieden");
-                        // roundEnd(winner);
-                    }
-                    break;
+                    else
+                        console.log("Runde geht weiter");
                 }
-                if (roundWonEasy) {
-                    console.log("Runde geht weiter");
-                    // playerTurn();
-                    return;
-                }
-            // for (let i: number = 0; i <= game.length; i++) {
-            //         if (game[i].hasAttribute("playerCard")) {
-            //             console.log("Alle Platzhalter sind belegt");
-            //             return;
-            //         }
             // case "middle":
             //     let winningConditionsMiddle: number[][] = [
             //     [0, 1, 2, 3],
@@ -201,27 +175,20 @@ var tictactoe;
             //     [0, 5, 10, 15],
             //     [3, 6, 9, 12]
             //     ];
-            //     let roundWonMiddle: boolean = false;
             //     for (let i: number = 0; i <= 10; i++) {
-            //     let winCondition: number[] = winningConditionsMiddle[i];
-            //     let a: HTMLDivElement = game[winCondition[0]];
-            //     let b: HTMLDivElement = game[winCondition[1]];
-            //     let c: HTMLDivElement = game[winCondition[2]];
-            //     let d: HTMLDivElement = game[winCondition[3]];
-            //     console.log("test", a, b, c, d);
-            //     if (a.getAttribute("disabled") || b.getAttribute("disabled") || c.getAttribute("disabled") || d.getAttribute("disabled")) {
-            //         continue;
+            //         let winCondition: number[] = winningConditionsMiddle[i];
+            //         a = game[winCondition[0]];
+            //         b = game[winCondition[1]];
+            //         c = game[winCondition[2]];
+            //         d = game[winCondition[3]];
+            //         console.log("test", a, b, c, d);
+            //         if (a.getAttribute("taken") && b.getAttribute("taken") && c.getAttribute("taken") && d.getAttribute("taken")) {
+            //         console.log("Reihe ist voll");
+            //         checkLinesMiddle();
             //     }
-            //     if (a === b && b === c && c === d) {
-            //             roundWonMiddle = true;
-            //             console.log("Runde ist vorbei");
-            //             break;
-            //         }
+            //     else 
+            //         console.log("Runde geht weiter");
             // }
-            //     if (roundWonMiddle) {
-            //     console.log("Runde geht weiter");
-            //     return;
-            //     }
             // case "difficult":
             //     let winningConditionsDifficult: number[][] = [
             //         [0, 1, 2, 3, 4],
@@ -237,76 +204,112 @@ var tictactoe;
             //         [0, 6, 12, 18, 24],
             //         [4, 8, 12, 16, 20]
             //         ];
-            //     let roundWonDifficult: boolean = false;
             //     for (let i: number = 0; i <= 12; i++) {
             //             let winCondition: number[] = winningConditionsDifficult[i];
-            //             let a: HTMLDivElement = game[winCondition[0]];
-            //             let b: HTMLDivElement = game[winCondition[1]];
-            //             let c: HTMLDivElement = game[winCondition[2]];
-            //             let d: HTMLDivElement = game[winCondition[3]];
-            //             let e: HTMLDivElement = game[winCondition[4]];
+            //             a = game[winCondition[0]];
+            //             b = game[winCondition[1]];
+            //             c = game[winCondition[2]];
+            //             d = game[winCondition[3]];
+            //             e = game[winCondition[4]];
             //             console.log("test", a, b, c, d, e);
-            //             if (a.getAttribute("disabled") || b.getAttribute("disabled") || c.getAttribute("disabled") || d.getAttribute("disabled") || e.getAttribute("disabled")) {
-            //                 continue;
-            //             }
-            //             if (a === b && b === c && c === d && d === e) {
-            //                 roundWonDifficult = true;
-            //                 console.log("Runde ist vorbei");
-            //                 break;
-            //             }
+            //             if (a.getAttribute("taken") && b.getAttribute("taken") && c.getAttribute("taken") && d.getAttribute("taken") && e.getAttribute("taken")) {
+            //             console.log("Reihe ist voll");
+            //             checkLinesDifficult();
             //         }
-            //     if (roundWonDifficult) {
+            //         else 
             //             console.log("Runde geht weiter");
-            //             return;
-            //         }
-            // default: 
-            //     console.log("Spiel geht weiter");
-            //     break;
             //     }
-            // }
         }
-        // Regelt das Ende einer Runde
-        // Dabei wird ausgewertet, wer gewonnen hat und dementsprechend ein Punkt vergeben und eine Nachricht an den Spieler gesendet
-        // function roundEnd(_winner: string): void {
-        //     pointsRound.innerHTML = "Runde: ";
-        //     pointsBeginning += pointsToGet; 
-        //     pointsRound.innerHTML += + pointsBeginning;
-        //     for (let i: number = 0; i <= severityLength; i++) {
-        //         switch (winner) {     
-        //             case "player":
-        //                     //Spieler bekommt einen Punkt
-        //                     pointsPlayer.innerHTML = "Dein Punktestand: ";
-        //                     pointsBeginning += pointsToGet; 
-        //                     pointsPlayer.innerHTML += + pointsBeginning;
-        //                     setTimeout(function(): void {window.alert("Du hast diese Runde gewonnen!"); showCards(severity); }, 500);
-        //                     break;
-        //             case "computer":
-        //                     //Computer bekommt einen Punkt
-        //                     pointsComputer.innerHTML = "Computer Punktestand: ";
-        //                     pointsBeginning += pointsToGet; 
-        //                     pointsComputer.innerHTML += + pointsBeginning;
-        //                     setTimeout(function(): void {window.alert("Der Computer hat diese Runde gewonnen!"); showCards(severity); }, 500);
-        //                     break;
-        //             case "tied":
-        //                     setTimeout(function(): void {window.alert("Diese Runde ist unentschieden."); showCards(severity); }, 500);
-        //                     break;
-        //         }
-        //         // gameEnd();
-        //     }
-        // }
-        // Regelt das Ende des Spieles
-        // Dabei wird ausgewertet, wer gewonnen hat und es wird dementsprechend eine Nachricht an den Spieler gesendet
-        // function gameEnd(): void {
-        //     if (pointsPlayer > pointsComputer) {
-        //         setTimeout(function(): void {window.alert("Du hast dieses Spiel gewonnen!"); startGame(); }, 500);
-        //     }
-        //     if (pointsPlayer < pointsComputer) {
-        //         setTimeout(function(): void {window.alert("Der Computer hat dieses Spiel gewonnen!"); startGame(); }, 500);
-        //     }
-        //     else {
-        //         setTimeout(function(): void {window.alert("Dieses Spiel geht unentschieden aus!"); startGame(); }, 500);
-        //     }
-        // }
     }
+    function checkLinesEasy() {
+        if (a.getAttribute("class") && b.getAttribute("class") && c.getAttribute("class")) {
+            console.log("Reihe ist voll mit Karten des Spielers");
+            winner = "player";
+            // roundEnd(winner);
+        }
+        else if (a.getAttribute("class") && b.getAttribute("class") && c.getAttribute("class")) {
+            console.log("Reihe ist voll mit Karten des Computers");
+            winner = "computer";
+            // roundEnd(winner);
+        }
+        else {
+            console.log("Runde geht weiter 2");
+        }
+    }
+    function checkLinesMiddle() {
+        if (a.getAttribute("cardPlayer") === b.getAttribute("cardPlayer") && b.getAttribute("cardPlayer") === c.getAttribute("cardPlayer") && c.getAttribute("cardPlayer") === d.getAttribute("cardPlayer")) {
+            console.log("Reihe ist voll mit Karten des Spielers");
+            winner = "player";
+            // roundEnd(winner);
+        }
+        else if (a.getAttribute("cardComputer") === b.getAttribute("cardComputer") && b.getAttribute("cardComputer") === c.getAttribute("cardComputer") && c.getAttribute("cardComputer") === d.getAttribute("cardComputer")) {
+            console.log("Reihe ist voll mit Karten des Computers");
+            winner = "computer";
+            // roundEnd(winner);
+        }
+        else {
+            console.log("Runde geht weiter");
+        }
+    }
+    function checkLinesDifficult() {
+        if (a.getAttribute("cardPlayer") === b.getAttribute("cardPlayer") && b.getAttribute("cardPlayer") === c.getAttribute("cardPlayer") && c.getAttribute("cardPlayer") === d.getAttribute("cardPlayer") && d.getAttribute("cardPlayer") === e.getAttribute("cardPlayer")) {
+            console.log("Reihe ist voll mit Karten des Spielers");
+            winner = "player";
+            // roundEnd(winner);
+        }
+        else if (a.getAttribute("cardComputer") === b.getAttribute("cardComputer") && b.getAttribute("cardComputer") === c.getAttribute("cardComputer") && c.getAttribute("cardComputer") === d.getAttribute("cardComputer") && d.getAttribute("cardComputer") === e.getAttribute("cardComputer")) {
+            console.log("Reihe ist voll mit Karten des Computers");
+            winner = "computer";
+            // roundEnd(winner);
+        }
+        else {
+            console.log("Runde geht weiter");
+        }
+    }
+    // for (let i: number = 0; i <= game.length; i++) {
+    //     if (game[i].hasAttribute("playerCard")) {
+    //         console.log("Alle Platzhalter sind belegt");
+    //         return;
+    //     }
+    // }
+    // Regelt das Ende einer Runde
+    // Dabei wird ausgewertet, wer gewonnen hat und dementsprechend ein Punkt vergeben und eine Nachricht an den Spieler gesendet
+    // function roundEnd(_winner: string): void {
+    //     pointsRound.innerHTML = "Runde: ";
+    //     pointsBeginning += pointsToGet; 
+    //     pointsRound.innerHTML += + pointsBeginning;
+    //     switch (winner) {     
+    //         case "player":
+    //             //Spieler bekommt einen Punkt
+    //             pointsPlayer.innerHTML = "Dein Punktestand: ";
+    //             pointsBeginning += pointsToGet; 
+    //             console.log("Hsjhadskhdkashdhdshdl", pointsBeginning);
+    //             pointsPlayer.innerHTML += pointsBeginning;
+    //             setTimeout(function(): void {window.alert("Du hast diese Runde gewonnen!"); showPlaceholders(severity); }, 500);
+    //             break;
+    //         case "computer":
+    //             //Computer bekommt einen Punkt
+    //             pointsComputer.innerHTML = "Computer Punktestand: ";
+    //             pointsBeginning += pointsToGet; 
+    //             pointsComputer.innerHTML += pointsBeginning;
+    //             setTimeout(function(): void {window.alert("Der Computer hat diese Runde gewonnen!"); showPlaceholders(severity); }, 500);
+    //             break;
+    //         case "tied":
+    //             setTimeout(function(): void {window.alert("Diese Runde ist unentschieden."); showPlaceholders(severity); }, 500);
+    //             break;
+    //     }
+    // }
+    // Regelt das Ende des Spieles
+    // Dabei wird ausgewertet, wer gewonnen hat und es wird dementsprechend eine Nachricht an den Spieler gesendet
+    // function gameEnd(): void {
+    //     if (pointsPlayer > pointsComputer) {
+    //         setTimeout(function(): void {window.alert("Du hast dieses Spiel gewonnen!"); startGame(); }, 500);
+    //     }
+    //     else if (pointsPlayer < pointsComputer) {
+    //         setTimeout(function(): void {window.alert("Der Computer hat dieses Spiel gewonnen!"); startGame(); }, 500);
+    //     }
+    //     else {
+    //         setTimeout(function(): void {window.alert("Dieses Spiel geht unentschieden aus!"); startGame(); }, 500);
+    //     }
 })(tictactoe || (tictactoe = {}));
 //# sourceMappingURL=tictactoe.js.map
