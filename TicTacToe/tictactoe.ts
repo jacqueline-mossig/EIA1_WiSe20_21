@@ -235,7 +235,7 @@ function checkLinesForEasy(): void {
             [3, 6, 9, 12]
             ];
             
-        for (let i: number = 0; i <= 10; i++) {
+        for (let i: number = 0; i <= 9; i++) {
             let winCondition: number[] = winningConditionsMiddle[i];
             a = game[winCondition[0]];
             b = game[winCondition[1]];
@@ -268,7 +268,7 @@ function checkLinesForEasy(): void {
                 [4, 8, 12, 16, 20]
                 ];
         
-            for (let i: number = 0; i <= 12; i++) {
+            for (let i: number = 0; i <= 11; i++) {
                 let winCondition: number[] = winningConditionsDifficult[i];
                 a = game[winCondition[0]];
                 b = game[winCondition[1]];
@@ -312,12 +312,12 @@ function checkLinesMiddle(): void {
     if (a.getAttribute("player") && b.getAttribute("player") && c.getAttribute("player") && d.getAttribute("player")) {
         console.log("Reihe ist voll mit Karten des Spielers");
         winner = "player";
-        // roundEnd(winner);
+        roundEnd();
     }
     else if (a.getAttribute("computer") && b.getAttribute("computer") && c.getAttribute("computer") && d.getAttribute("computer")) {
         console.log("Reihe ist voll mit Karten des Computers");
         winner = "computer";
-        // roundEnd(winner);
+        roundEnd();
     }
     else {
     console.log("Runde geht weiter");
@@ -328,12 +328,12 @@ function checkLinesDifficult(): void {
     if (a.getAttribute("player") && b.getAttribute("player") && c.getAttribute("player") && d.getAttribute("player") && e.getAttribute("player")) {
         console.log("Reihe ist voll mit Karten des Spielers");
         winner = "player";
-        // roundEnd(winner);
+        roundEnd();
     }
     else if (a.getAttribute("computer") && b.getAttribute("computer") && c.getAttribute("computer") && d.getAttribute("computer") && e.getAttribute("computer")) {
         console.log("Reihe ist voll mit Karten des Computers");
         winner = "computer";
-        // roundEnd(winner);
+        roundEnd();
     }
     else {
     console.log("Runde geht weiter");
