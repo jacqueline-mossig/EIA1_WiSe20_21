@@ -17,6 +17,7 @@ namespace tictactoe {
     let showingPointsComputer: HTMLDivElement;              //zeigt die Punkte des Computers
 
     let showingRounds: HTMLDivElement;                      //zeigt die Rundenanzahl
+    let gameRound: number = 0;                              //bezieht sich auf das Array game bei den Spielzügen
     let roundCounter: number;                               //Rundenanzahl
     let roundsProgress: HTMLProgressElement;                //zeigt den visuellen Balken der Rundenanzahl
 
@@ -28,11 +29,9 @@ namespace tictactoe {
     let d: HTMLDivElement;
     let e: HTMLDivElement;
 
-    let i: number = 0;
-
     let clicked: boolean = false;                           //Schränkt das Klicken des Spielers ein
 
-    // Fragt den Spieler, mit welchem Schwierigkeitsgrad er spielen möchte und rudt die Funktionen zu Spielvorbereitung auf
+    // Fragt den Spieler, mit welchem Schwierigkeitsgrad er spielen möchte und ruft die Funktionen zu Spielvorbereitung auf
     function startGame(): void {
         console.log("Das Spiel wird gestartet");
         severity = String(window.prompt("Mit welchem Schwierigkeitsgrad möchtest du spielen? Wähle zwischen 'easy', 'middle' oder 'difficult'!"));
@@ -169,7 +168,7 @@ namespace tictactoe {
     }
 
     // Regelt den Spielzug des Spielers
-    // Dabei kann der Spieler eine seiner Spielkarten auf einem Platzhalter ablegen
+    // Dabei kann der Spieler einmal eine seiner Spielkarten auf einem Platzhalter ablegen
     function playerTurn(_placeholderNumber: number, _placeholderDiv: HTMLDivElement): void {
         let playerCard: HTMLDivElement = <HTMLDivElement>document.createElement("div");
 
@@ -182,6 +181,7 @@ namespace tictactoe {
             playerCard.setAttribute("taken", "taken");
             playerCard.setAttribute("player", "player");
             _placeholderDiv.appendChild(playerCard);
+            gameRound += 1;
             console.log("Du hast einen Spielstein platziert");
 
             if (clicked === true) {
@@ -193,6 +193,7 @@ namespace tictactoe {
                 existingPlaceholder[_placeholderNumber] = emptyDiv;
 
                 setTimeout(checkLines, 200);
+                checkAllLines();
                 setTimeout(computerTurn, 500);
                 clicked = true;
             }
@@ -202,9 +203,7 @@ namespace tictactoe {
     // Regelt den Spielzug des Computers
     // Dabei legt der Computer zufällig eine seiner Spielkarten auf einen Platzhalter
     function computerTurn(): void {
-        // if (newRound === true) {
-        //     checkLines();
-        // }
+        let i: number = 0;
         let randomDiv: HTMLDivElement;
         //Mischung des Arrays
         randomDiv = existingPlaceholder[Math.floor(Math.random() * existingPlaceholder.length)];
@@ -225,10 +224,12 @@ namespace tictactoe {
         indexOfTakenDiv = game.indexOf(randomDiv);
         game.splice(indexOfTakenDiv, 1, computerCard);
         existingPlaceholder[indexOfTakenDiv] = emptyDiv;
+        gameRound += 1;
 
         console.log("Der Computer hat einen Spielstein platziert");
         clicked = false;
         setTimeout(checkLines, 200);
+        checkAllLines();
     }
 
     // Überprüft je nach Schwierigkeitsgrad, ob die Platzhalter der einzelnen Reihen mit Spielkarten belegt sind
@@ -257,9 +258,6 @@ namespace tictactoe {
                     //Wenn bei einer Variante die Platzhalter mit Spielkarten belegt sind, wird die Funktion checkLinesEasy() aufgerufen
                     if (a.getAttribute("taken") && b.getAttribute("taken") && c.getAttribute("taken")) {
                         checkLinesEasy();
-                        //Wenn nicht, wird die Funktion checkAllLines() aufgerufen
-                    } else {
-                        checkAllLines();
                     }
                 }
                 break;
@@ -289,10 +287,7 @@ namespace tictactoe {
                     //Wenn bei einer Variante die Platzhalter mit Spielkarten belegt sind, wird die Funktion checkLinesMiddle() aufgerufen
                     if (a.getAttribute("taken") && b.getAttribute("taken") && c.getAttribute("taken") && d.getAttribute("taken")) {
                         checkLinesMiddle();
-                        //Wenn nicht, wird die Funktion checkAllLines() aufgerufen
-                    } else {
-                        checkAllLines();
-                    }
+                    } 
                 }
                 break;
             case "difficult":
@@ -321,21 +316,18 @@ namespace tictactoe {
                     d = game[winCondition[3]];
                     e = game[winCondition[4]];
 
-                    //Wenn bei einer Variante die Platzhalter mit Spielkarten belegt sind, wird die Funktion checkLinesMiddle() aufgerufen
+                    //Wenn bei einer Variante die Platzhalter mit Spielkarten belegt sind, wird die Funktion checkLinesDifficult() aufgerufen
                     if (a.getAttribute("taken") && b.getAttribute("taken") && c.getAttribute("taken") && d.getAttribute("taken") && e.getAttribute("taken")) {
                         checkLinesDifficult();
-                        //Wenn nicht, wird die Funktion checkAllLines() aufgerufen
-                    } else {
-                        checkAllLines();
                     }
                 }
                 break;
         }
     }
 
-    // Überprüft für den Schwirigkeitsgrad easy, ob die einzelne Reihe mit nur einer Art von Spielkarte belegt sind
+    // Überprüft für den Schwirigkeitsgrad easy, ob die einzelne Reihe mit nur einer Art von Spielkarte belegt ist
     function checkLinesEasy(): void {
-        //Wenn die einzelnen Reihen mit den Spielkarten des Spielers belegt ist, gewinnt der Spieler die Runde
+        //Wenn die einzelne Reihe mit den Spielkarten des Spielers belegt ist, gewinnt der Spieler die Runde
         if (a.getAttribute("player") && b.getAttribute("player") && c.getAttribute("player")) {
             console.log("Das Spiel ist zu Ende");
             winner = "player";
@@ -347,15 +339,15 @@ namespace tictactoe {
             winner = "computer";
             roundEnd();
         }
-        //Wenn die einzelnen Reihe mit unterschiedlichen Karten belegt ist, wird die Funktion checkAllLines() aufgerufen
+        //Wenn die einzelne Reihe mit unterschiedlichen Karten belegt ist, passiert nichts
         else {
-            checkAllLines();
+            console.log("Das Spiel geht weiter");
         }
     }
 
-    // Überprüft für den Schwirigkeitsgrad middle, ob die einzelne Reihe mit nur einer Art von Spielkarte belegt sind
+    // Überprüft für den Schwirigkeitsgrad middle, ob die einzelne Reihe mit nur einer Art von Spielkarte belegt ist
     function checkLinesMiddle(): void {
-        //Wenn die einzelnen Reihen mit den Spielkarten des Spielers belegt ist, gewinnt der Spieler die Runde
+        //Wenn die einzelne Reihe mit den Spielkarten des Spielers belegt ist, gewinnt der Spieler die Runde
         if (a.getAttribute("player") && b.getAttribute("player") && c.getAttribute("player") && d.getAttribute("player")) {
             console.log("Das Spiel ist zu Ende");
             winner = "player";
@@ -367,15 +359,15 @@ namespace tictactoe {
             winner = "computer";
             roundEnd();
         }
-        //Wenn die einzelnen Reihe mit unterschiedlichen Karten belegt ist, wird die Funktion checkAllLines() aufgerufen
+        //Wenn die einzelne Reihe mit unterschiedlichen Karten belegt ist, passiert nichts
         else {
-            checkAllLines();
+            console.log("Das Spiel geht weiter");
         }
     }
 
-    // Überprüft für den Schwirigkeitsgrad difficult, ob die einzelne Reihe mit nur einer Art von Spielkarte belegt sind
+    // Überprüft für den Schwirigkeitsgrad difficult, ob die einzelne Reihe mit nur einer Art von Spielkarte belegt ist
     function checkLinesDifficult(): void {
-        //Wenn die einzelnen Reihen mit den Spielkarten des Spielers belegt ist, gewinnt der Spieler die Runde
+        //Wenn die einzelne Reihe mit den Spielkarten des Spielers belegt ist, gewinnt der Spieler die Runde
         if (a.getAttribute("player") && b.getAttribute("player") && c.getAttribute("player") && d.getAttribute("player") && e.getAttribute("player")) {
             console.log("Das Spiel ist zu Ende");
             winner = "player";
@@ -387,24 +379,24 @@ namespace tictactoe {
             winner = "computer";
             roundEnd();
         }
-        //Wenn die einzelnen Reihe mit unterschiedlichen Karten belegt ist, wird die Funktion checkAllLines() aufgerufen
+        //Wenn die einzelne Reihe mit unterschiedlichen Karten belegt ist, passiert nichts
         else {
-            checkAllLines();
+            console.log("Das Spiel geht weiter");
         }
     }
 
     // Überprüft, ob alle Platzhalter mit Spielkarten belegt sind, um ein mögliches Unentschieden feststellen zu können
     function checkAllLines(): void {
-        for (let i: number = 0; i == game.length; i++) {
-            //Wenn alle Platzhalter belegt sind, wird die Funktion roundEnd() aufgerufen
-            if (!game[i].getAttribute("taken")) {
-                console.log("Das Spiel ist zu Ende");
-                roundEnd();
-            }
-            //Wenn nicht alle Platzhalter belegt sind, geht das Spiel weiter
-            else {
-                console.log("Die Runde geht weiter");
-            }
+        // Überprüfung der Platzhalter
+        if (gameRound >= game.length) {
+            gameRound = 0;
+            console.log("Die Runde ist zu Ende");
+            winner = "tied";
+            roundEnd();
+        }
+        //Wenn nicht alle Platzhalter belegt sind, geht die Runde weiter
+        else {
+            console.log("Die Runde geht weiter");
         }
     }
 
@@ -414,6 +406,7 @@ namespace tictactoe {
     function roundEnd(): void {
         severityLength += 1;
         roundCounter += 1;
+        gameRound = 0;
 
         switch (winner) {
             //Der Spieler hat die Runde gewonnen
@@ -513,7 +506,7 @@ namespace tictactoe {
         }
         //Wenn sie beide gleich viele Punkte haben, ist es unentschieden
         else {
-            window.alert("Es ist unentschieden!");
+            window.alert("Dieses Spiel ist unentschieden!");
             startGame();
         }
     }
