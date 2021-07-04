@@ -8,34 +8,38 @@ var tictactoe;
     let existingPlaceholder = []; //Array für die wegfallenden Platzhalter
     let untakenDiv; //Platzalter, die zu Beginn erstellt werden
     let emptyDiv; //Platzhalter, die aus dem Array genommen werden
-    let pointsPlayer; //Punkteanzahl des Spielers und Computers zu Beginn des Spieles
-    let pointsComputer;
+    let pointsPlayer; //Punkteanzahl des Spielers
+    let pointsComputer; //Punkteanzahl des Spielers
     let showingPointsPlayer; //zeigt die Punkte des Spielers
     let showingPointsComputer; //zeigt die Punkte des Computers
-    let rounds; //zeigt die Rundenanzahl
-    let roundCounter;
+    let showingRounds; //zeigt die Rundenanzahl
+    let roundCounter; //Rundenanzahl
     let roundsProgress; //zeigt den visuellen Balken der Rundenanzahl
     let winner; //enthält die Informationen, wie das Spiel ausgeht
     let a;
     let b;
-    let c;
+    let c; //Variablen für die Überprüfung der Reihen
     let d;
     let e;
-    // Fragt den Spieler, mit welchem Schwierigkeitsgrad er spielen möchte 
+    let i = 0;
+    let clicked = false; //Schränkt das Klicken des Spielers ein
+    // Fragt den Spieler, mit welchem Schwierigkeitsgrad er spielen möchte und rudt die Funktionen zu Spielvorbereitung auf
     function startGame() {
-        console.log("Das Spiel wird gestartet.");
+        console.log("Das Spiel wird gestartet");
         severity = String(window.prompt("Mit welchem Schwierigkeitsgrad möchtest du spielen? Wähle zwischen 'easy', 'middle' oder 'difficult'!"));
-        showPlaceholders(severity);
+        createPlaceholders(severity);
         showPoints();
     }
     // Erstellt die Platzhalter angepasst an den Schwierigkeitsgrad
-    function showPlaceholders(_userInput) {
+    function createPlaceholders(_userInput) {
         switch (severity) {
             case "easy":
+                //Leerung des Feldes und der Arrays
                 let fieldEasy = document.getElementById("field");
                 fieldEasy.innerHTML = "";
                 game.splice(0, game.length);
                 existingPlaceholder.splice(0, existingPlaceholder.length);
+                //Erstellung und Platzierung der Platzhalter angepasst an den Schwierigkeitsgrad easy
                 for (let i = 0; i < 9; i++) {
                     untakenDiv = document.createElement("div");
                     untakenDiv.setAttribute("class", "placeholderEasy");
@@ -46,13 +50,16 @@ var tictactoe;
                     untakenDiv.addEventListener("click", function () { playerTurn(i, game[i]); });
                     untakenDiv.addEventListener("touch", function () { playerTurn(i, game[i]); });
                 }
+                newRound = false;
                 console.log("Die Platzhalter werden erstellt");
                 break;
             case "middle":
+                //Leerung des Feldes und der Arrays
                 let fieldMiddle = document.getElementById("field");
                 fieldMiddle.innerHTML = "";
                 game.splice(0, game.length);
                 existingPlaceholder.splice(0, existingPlaceholder.length);
+                //Erstellung und Platzierung der Platzhalter angepasst an den Schwierigkeitsgrad middle
                 for (let i = 0; i < 16; i++) {
                     untakenDiv = document.createElement("div");
                     untakenDiv.setAttribute("class", "placeholderMiddle");
@@ -65,10 +72,12 @@ var tictactoe;
                 console.log("Die Platzhalter werden erstellt");
                 break;
             case "difficult":
+                //Leerung des Feldes und der Arrays
                 let fieldDifficult = document.getElementById("field");
                 fieldDifficult.innerHTML = "";
                 game.splice(0, game.length);
                 existingPlaceholder.splice(0, existingPlaceholder.length);
+                //Erstellung und Platzierung der Platzhalter angepasst an den Schwierigkeitsgrad difficult
                 for (let i = 0; i < 25; i++) {
                     untakenDiv = document.createElement("div");
                     untakenDiv.setAttribute("class", "placeholderDifficult");
@@ -80,98 +89,119 @@ var tictactoe;
                 }
                 console.log("Die Platzhalter werden erstellt");
                 break;
+            //Bei falscher Eingabe des Spielers startet das Spiel nochmal neu
             default:
-                severity = String(window.prompt("Das war kein erlaubter Schwierigkeitsgrad! Versuch es nochmal!"));
+                startGame();
                 break;
         }
     }
-    // Zeigt die Punkte des Spielers und des Computers zu Beginn des Spieles
+    // Zeigt die Punkte des Spielers und des Computers und die Rundenanzeigen zu Beginn des Spieles
     function showPoints() {
         severityLength = 1;
+        //Punkte des Spielers
         pointsPlayer = 0;
         showingPointsPlayer = document.getElementById("player");
         showingPointsPlayer.innerHTML = "Dein Punktestand: " + pointsPlayer;
-        // console.log("Die Punkte des Spielers werden angezeigt.", pointsBeginning);
+        //Punkte des Computers
         pointsComputer = 0;
         showingPointsComputer = document.getElementById("computer");
         showingPointsComputer.innerHTML = "Computer Punktestand: " + pointsComputer;
-        // console.log("Die Punkte des Computers werden angezeigt.", pointsBeginning);
+        //Vorbereitungen für Rundenanzeigen
         roundCounter = 1;
-        rounds = document.getElementById("round");
+        showingRounds = document.getElementById("round");
         roundsProgress = document.createElement("progress");
         switch (severity) {
             case "easy":
-                rounds.innerHTML = "Runde: " + roundCounter + "/3";
+                //Rundenanzeige beim Schwierigkeitsgrad easy
+                showingRounds.innerHTML = "Runde: " + roundCounter + "/3";
+                //Anzeige des Fortschrittsbalkens für die Runden beim Schwierigkeitsgrad easy
                 roundsProgress.setAttribute("class", "progress");
-                rounds.appendChild(roundsProgress);
+                showingRounds.appendChild(roundsProgress);
                 roundsProgress.max = 3;
                 roundsProgress.value = 1;
                 break;
             case "middle":
-                rounds.innerHTML = "Runde: " + roundCounter + "/4";
+                //Rundenanzeige beim Schwierigkeitsgrad middle
+                showingRounds.innerHTML = "Runde: " + roundCounter + "/4";
+                //Anzeige des Fortschrittsbalkens für die Runden beim Schwierigkeitsgrad middle
                 roundsProgress.setAttribute("class", "progress");
-                rounds.appendChild(roundsProgress);
+                showingRounds.appendChild(roundsProgress);
                 roundsProgress.max = 4;
                 roundsProgress.value = 1;
                 break;
             case "difficult":
-                rounds.innerHTML = "Runde: " + roundCounter + "/5";
+                //Rundenanzeige beim Schwierigkeitsgrad difficult
+                showingRounds.innerHTML = "Runde: " + roundCounter + "/5";
+                //Anzeige des Fortschrittsbalkens für die Runden beim Schwierigkeitsgrad difficult
                 roundsProgress.setAttribute("class", "progress");
-                rounds.appendChild(roundsProgress);
+                showingRounds.appendChild(roundsProgress);
                 roundsProgress.max = 5;
                 roundsProgress.value = 1;
                 break;
         }
     }
     // Regelt den Spielzug des Spielers
-    // Dabei kann der Spieler eine seiner Spielkarten auf einen Platzhalter legen
+    // Dabei kann der Spieler eine seiner Spielkarten auf einem Platzhalter ablegen
     function playerTurn(_placeholderNumber, _placeholderDiv) {
         let playerCard = document.createElement("div");
-        console.log(emptyDiv, "emptyDiv");
+        //Überprüfung, wo der Spieler seine Karte ablegen kann
         if (existingPlaceholder[_placeholderNumber] == emptyDiv) {
             console.log("Leider ist dieser Platzhalter schon belegt");
         }
         else {
+            //Erstellung und Platzierung der Karte des Computers
             playerCard.setAttribute("class", "cardPlayer");
             playerCard.setAttribute("taken", "taken");
             playerCard.setAttribute("player", "player");
             _placeholderDiv.appendChild(playerCard);
-            game.splice(_placeholderNumber, 1, playerCard);
-            existingPlaceholder[_placeholderNumber] = emptyDiv;
-            console.log("GRRRRRRRR", emptyDiv);
-            console.log("GGGGGGGGGGGGGGGG", existingPlaceholder);
-            console.log("Spielstein von Spieler gelegt");
-            setTimeout(checkLinesForEasy, 200);
-            setTimeout(computerTurn, 500);
+            console.log("Du hast einen Spielstein platziert");
+            if (clicked === true) {
+                console.log("Du bist leider nicht dran");
+                _placeholderDiv.removeChild(playerCard);
+            }
+            else {
+                //Aktualisierung der Arrays
+                game.splice(_placeholderNumber, 1, playerCard);
+                existingPlaceholder[_placeholderNumber] = emptyDiv;
+                setTimeout(checkLines, 200);
+                setTimeout(computerTurn, 500);
+                clicked = true;
+            }
         }
     }
     // Regelt den Spielzug des Computers
     // Dabei legt der Computer zufällig eine seiner Spielkarten auf einen Platzhalter
     function computerTurn() {
-        let i = 0;
+        // if (newRound === true) {
+        //     checkLines();
+        // }
         let randomDiv;
+        //Mischung des Arrays
         randomDiv = existingPlaceholder[Math.floor(Math.random() * existingPlaceholder.length)];
-        do {
+        while (randomDiv == emptyDiv && i < 100) {
             randomDiv = existingPlaceholder[Math.floor(Math.random() * existingPlaceholder.length)];
-            i++;
-        } while (randomDiv == emptyDiv && i < 15);
+        }
+        i++;
+        //Erstellung und Platzierung der Karte des Computers
         let computerCard = document.createElement("div");
         computerCard.setAttribute("class", "cardComputer");
         computerCard.setAttribute("taken", "taken");
         computerCard.setAttribute("computer", "computer");
         randomDiv.appendChild(computerCard);
+        //Aktualisierung der Arrays
         let indexOfTakenDiv;
         indexOfTakenDiv = game.indexOf(randomDiv);
         game.splice(indexOfTakenDiv, 1, computerCard);
         existingPlaceholder[indexOfTakenDiv] = emptyDiv;
-        console.log("Spielstein von Computer gelegt");
-        setTimeout(checkLinesForEasy, 200);
+        console.log("Der Computer hat einen Spielstein platziert");
+        clicked = false;
+        setTimeout(checkLines, 200);
     }
-    // Überprüft, ob die einzelnen Reihen mit nur einer Art von Spielkarte gefüllt sind
-    // Dabei werden je nach Schwierigkeitsgrad die einzelnen Möglichkeiten überprüft und dementsprechend die Runde weitergeführt oder beendet
-    function checkLinesForEasy() {
+    // Überprüft je nach Schwierigkeitsgrad, ob die Platzhalter der einzelnen Reihen mit Spielkarten belegt sind
+    function checkLines() {
         switch (severity) {
             case "easy":
+                //Mögliche Varianten für den Schwierigkeitsgrad easy
                 let winningConditionsEasy = [
                     [0, 1, 2],
                     [3, 4, 5],
@@ -182,23 +212,24 @@ var tictactoe;
                     [0, 4, 8],
                     [2, 4, 6]
                 ];
+                //Überprüfung, ob bei einer Variante die Platzhalter mit Spielkarten belegt sind
                 for (let i = 0; i <= 7; i++) {
                     let winCondition = winningConditionsEasy[i];
                     a = game[winCondition[0]];
                     b = game[winCondition[1]];
                     c = game[winCondition[2]];
-                    // console.log(a, b, c);
+                    //Wenn bei einer Variante die Platzhalter mit Spielkarten belegt sind, wird die Funktion checkLinesEasy() aufgerufen
                     if (a.getAttribute("taken") && b.getAttribute("taken") && c.getAttribute("taken")) {
-                        console.log("Reihe ist voll");
                         checkLinesEasy();
+                        //Wenn nicht, wird die Funktion checkAllLines() aufgerufen
                     }
                     else {
-                        console.log("Runde geht weiter 1");
                         checkAllLines();
                     }
                 }
                 break;
             case "middle":
+                //Mögliche Varianten für den Schwierigkeitsgrad middle
                 let winningConditionsMiddle = [
                     [0, 1, 2, 3],
                     [4, 5, 6, 7],
@@ -211,24 +242,25 @@ var tictactoe;
                     [0, 5, 10, 15],
                     [3, 6, 9, 12]
                 ];
+                //Überprüfung, ob bei einer Variante die Platzhalter mit Spielkarten belegt sind
                 for (let i = 0; i <= 9; i++) {
                     let winCondition = winningConditionsMiddle[i];
                     a = game[winCondition[0]];
                     b = game[winCondition[1]];
                     c = game[winCondition[2]];
                     d = game[winCondition[3]];
-                    // console.log("test", a, b, c, d);
+                    //Wenn bei einer Variante die Platzhalter mit Spielkarten belegt sind, wird die Funktion checkLinesMiddle() aufgerufen
                     if (a.getAttribute("taken") && b.getAttribute("taken") && c.getAttribute("taken") && d.getAttribute("taken")) {
-                        console.log("Reihe ist voll");
                         checkLinesMiddle();
+                        //Wenn nicht, wird die Funktion checkAllLines() aufgerufen
                     }
                     else {
-                        console.log("Runde geht weiter 1");
-                        // checkAllLines();
+                        checkAllLines();
                     }
                 }
                 break;
             case "difficult":
+                //Mögliche Varianten für den Schwierigkeitsgrad difficult
                 let winningConditionsDifficult = [
                     [0, 1, 2, 3, 4],
                     [5, 6, 7, 8, 9],
@@ -243,6 +275,7 @@ var tictactoe;
                     [0, 6, 12, 18, 24],
                     [4, 8, 12, 16, 20]
                 ];
+                //Überprüfung, ob bei einer Variante die Platzhalter mit Spielkarten belegt sind
                 for (let i = 0; i <= 11; i++) {
                     let winCondition = winningConditionsDifficult[i];
                     a = game[winCondition[0]];
@@ -250,96 +283,113 @@ var tictactoe;
                     c = game[winCondition[2]];
                     d = game[winCondition[3]];
                     e = game[winCondition[4]];
-                    // console.log("test", a, b, c, d, e);
+                    //Wenn bei einer Variante die Platzhalter mit Spielkarten belegt sind, wird die Funktion checkLinesMiddle() aufgerufen
                     if (a.getAttribute("taken") && b.getAttribute("taken") && c.getAttribute("taken") && d.getAttribute("taken") && e.getAttribute("taken")) {
-                        console.log("Reihe ist voll");
                         checkLinesDifficult();
+                        //Wenn nicht, wird die Funktion checkAllLines() aufgerufen
                     }
                     else {
-                        console.log("Runde geht weiter 1");
-                        // checkAllLines();
+                        checkAllLines();
                     }
                 }
                 break;
         }
     }
+    // Überprüft für den Schwirigkeitsgrad easy, ob die einzelne Reihe mit nur einer Art von Spielkarte belegt sind
     function checkLinesEasy() {
+        //Wenn die einzelnen Reihen mit den Spielkarten des Spielers belegt ist, gewinnt der Spieler die Runde
         if (a.getAttribute("player") && b.getAttribute("player") && c.getAttribute("player")) {
-            console.log("Reihe ist voll mit Karten des Spielers");
+            console.log("Das Spiel ist zu Ende");
             winner = "player";
             roundEnd();
         }
+        //Wenn die einzelne Reihe mit den Karten des Computers belegt ist, gewinnt der Computer die Runde
         else if (a.getAttribute("computer") && b.getAttribute("computer") && c.getAttribute("computer")) {
-            console.log("Reihe ist voll mit Karten des Computers");
+            console.log("Das Spiel ist zu Ende");
             winner = "computer";
             roundEnd();
         }
+        //Wenn die einzelnen Reihe mit unterschiedlichen Karten belegt ist, wird die Funktion checkAllLines() aufgerufen
         else {
-            console.log("Runde geht weiter 2");
+            checkAllLines();
         }
     }
+    // Überprüft für den Schwirigkeitsgrad middle, ob die einzelne Reihe mit nur einer Art von Spielkarte belegt sind
     function checkLinesMiddle() {
+        //Wenn die einzelnen Reihen mit den Spielkarten des Spielers belegt ist, gewinnt der Spieler die Runde
         if (a.getAttribute("player") && b.getAttribute("player") && c.getAttribute("player") && d.getAttribute("player")) {
-            console.log("Reihe ist voll mit Karten des Spielers");
+            console.log("Das Spiel ist zu Ende");
             winner = "player";
             roundEnd();
         }
+        //Wenn die einzelne Reihe mit den Karten des Computers belegt ist, gewinnt der Computer die Runde
         else if (a.getAttribute("computer") && b.getAttribute("computer") && c.getAttribute("computer") && d.getAttribute("computer")) {
-            console.log("Reihe ist voll mit Karten des Computers");
+            console.log("Das Spiel ist zu Ende");
             winner = "computer";
             roundEnd();
         }
+        //Wenn die einzelnen Reihe mit unterschiedlichen Karten belegt ist, wird die Funktion checkAllLines() aufgerufen
         else {
-            console.log("Runde geht weiter");
+            checkAllLines();
         }
     }
+    // Überprüft für den Schwirigkeitsgrad difficult, ob die einzelne Reihe mit nur einer Art von Spielkarte belegt sind
     function checkLinesDifficult() {
+        //Wenn die einzelnen Reihen mit den Spielkarten des Spielers belegt ist, gewinnt der Spieler die Runde
         if (a.getAttribute("player") && b.getAttribute("player") && c.getAttribute("player") && d.getAttribute("player") && e.getAttribute("player")) {
-            console.log("Reihe ist voll mit Karten des Spielers");
+            console.log("Das Spiel ist zu Ende");
             winner = "player";
             roundEnd();
         }
+        //Wenn die einzelne Reihe mit den Karten des Computers belegt ist, gewinnt der Computer die Runde
         else if (a.getAttribute("computer") && b.getAttribute("computer") && c.getAttribute("computer") && d.getAttribute("computer") && e.getAttribute("computer")) {
-            console.log("Reihe ist voll mit Karten des Computers");
+            console.log("Das Spiel ist zu Ende");
             winner = "computer";
             roundEnd();
         }
+        //Wenn die einzelnen Reihe mit unterschiedlichen Karten belegt ist, wird die Funktion checkAllLines() aufgerufen
         else {
-            console.log("Runde geht weiter");
+            checkAllLines();
         }
     }
+    // Überprüft, ob alle Platzhalter mit Spielkarten belegt sind, um ein mögliches Unentschieden feststellen zu können
     function checkAllLines() {
         for (let i = 0; i == game.length; i++) {
-            if (game[i].getAttribute("player") || game[i].getAttribute("computer")) {
-                console.log("Alle Platzhalter sind belegt");
+            //Wenn alle Platzhalter belegt sind, wird die Funktion roundEnd() aufgerufen
+            if (!game[i].getAttribute("taken")) {
+                console.log("Das Spiel ist zu Ende");
                 roundEnd();
             }
+            //Wenn nicht alle Platzhalter belegt sind, geht das Spiel weiter
             else {
-                console.log("Spiel geht weiter, da nicht alle Platzhalter belegt sind");
+                console.log("Die Runde geht weiter");
             }
         }
     }
     // Regelt das Ende einer Runde
-    // Dabei wird ausgewertet, wer gewonnen hat und dementsprechend ein Punkt vergeben und eine Nachricht an den Spieler gesendet
+    // Dabei wird ausgewertet, wer die Runde gewonnen hat und dementsprechend wird ein Punkt vergeben und eine Nachricht an den Spieler gesendet
+    // Außerdem wird ausgewertet, ob das Spiel zu Ende ist oder nicht
     function roundEnd() {
         severityLength += 1;
         roundCounter += 1;
-        console.log(roundsProgress);
         switch (winner) {
+            //Der Spieler hat die Runde gewonnen
             case "player":
-                //Spieler bekommt einen Punkt
+                //Der Spieler bekommt einen Punkt
                 pointsPlayer += 1;
                 showingPointsPlayer.innerHTML = "Dein Punktestand: " + pointsPlayer;
                 //Der Spieler bekommt eine Nachricht
                 window.alert("Du hast diese Runde gewonnen.");
                 break;
+            //Der Computer hat die Runde gewonnen
             case "computer":
-                //Computer bekommt einen Punkt
+                //Der Computer bekommt einen Punkt
                 pointsComputer += 1;
                 showingPointsComputer.innerHTML = "Dein Punktestand: " + pointsComputer;
                 //Der Spieler bekommt eine Nachricht
                 window.alert("Der Computer hat diese Runde gewonnen.");
                 break;
+            //Keiner hat die Runde gewonnen und niemand erhält einen Punkt
             case "tied":
                 //Der Spieler bekommt eine Nachricht
                 window.alert("Diese Runde ist unentschieden.");
@@ -347,63 +397,73 @@ var tictactoe;
         }
         switch (severity) {
             case "easy":
+                //Beim Schwierigkeitgrad easy wird das Spiel nach drei Runden beendet
                 if (severityLength == 4) {
-                    console.log("Spiel ist zu Ende");
+                    console.log("Das Spiel ist zu Ende");
                     gameEnd();
                 }
+                //Falls das Spiel nicht beendet wird, werden die Anzeigen für die Runde aktualisiert
                 else {
-                    console.log("Spiel geht weiter 3");
-                    rounds.innerHTML = "Runde: " + roundCounter + "/3";
+                    console.log("Das Spiel geht weiter");
+                    showingRounds.innerHTML = "Runde: " + roundCounter + "/3";
                     roundsProgress.setAttribute("class", "progress");
-                    rounds.appendChild(roundsProgress);
+                    showingRounds.appendChild(roundsProgress);
                     roundsProgress.max = 3;
                     roundsProgress.value += 1;
-                    showPlaceholders(severity);
+                    newRound = true;
+                    createPlaceholders(severity);
                 }
                 break;
             case "middle":
+                //Beim Schwierigkeitgrad middle wird das Spiel nach vier Runden beendet
                 if (severityLength == 5) {
-                    console.log("Spiel ist zu Ende");
-                    // gameEnd();
+                    console.log("Das Spiel ist zu Ende");
+                    gameEnd();
                 }
+                //Falls das Spiel nicht beendet wird, werden die Anzeigen für die Runde aktualisiert
                 else {
-                    console.log("Spiel geht weiter 3");
-                    rounds.innerHTML = "Runde: " + roundCounter + "/4";
+                    console.log("Das Spiel geht weiter");
+                    showingRounds.innerHTML = "Runde: " + roundCounter + "/4";
                     roundsProgress.setAttribute("class", "progress");
-                    rounds.appendChild(roundsProgress);
+                    showingRounds.appendChild(roundsProgress);
                     roundsProgress.max = 4;
                     roundsProgress.value += 1;
-                    showPlaceholders(severity);
+                    createPlaceholders(severity);
                 }
                 break;
             case "difficult":
+                //Beim Schwierigkeitgrad difficult wird das Spiel nach fünf Runden beendet
                 if (severityLength == 6) {
-                    console.log("Spiel ist zu Ende");
-                    // gameEnd();
+                    console.log("Das Spiel ist zu Ende");
+                    gameEnd();
                 }
+                //Falls das Spiel nicht beendet wird, werden die Anzeigen für die Runde aktualisiert
                 else {
-                    console.log("Spiel geht weiter 3");
-                    rounds.innerHTML = "Runde: " + roundCounter + "/5";
+                    console.log("Das Spiel geht weiter");
+                    showingRounds.innerHTML = "Runde: " + roundCounter + "/5";
                     roundsProgress.setAttribute("class", "progress");
-                    rounds.appendChild(roundsProgress);
+                    showingRounds.appendChild(roundsProgress);
                     roundsProgress.max = 5;
                     roundsProgress.value += 1;
-                    showPlaceholders(severity);
+                    createPlaceholders(severity);
                 }
                 break;
         }
     }
     // Regelt das Ende des Spieles
-    // Dabei wird ausgewertet, wer gewonnen hat und es wird dementsprechend eine Nachricht an den Spieler gesendet
+    // Dabei wird ausgewertet, wer gewonnen hat und dementsprechend wir dem Spieler eine Nachricht gesendet
     function gameEnd() {
+        //Wenn der Spieler mehr Punkte hat, gewinnt er
         if (pointsPlayer > pointsComputer) {
             window.alert("Du hast dieses Spiel gewonnen!");
             startGame();
         }
+        //Wenn der Computer mehr Punkte hat, gewinnt er
         else if (pointsPlayer < pointsComputer) {
             window.alert("Der Computer hat dieses Spiel gewonnen!");
             startGame();
         }
+        //Wenn sie beide gleich viele Punkte haben, ist es unentschieden
         else {
             window.alert("Es ist unentschieden!");
             startGame();
