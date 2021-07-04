@@ -50,7 +50,6 @@ var tictactoe;
                     untakenDiv.addEventListener("click", function () { playerTurn(i, game[i]); });
                     untakenDiv.addEventListener("touch", function () { playerTurn(i, game[i]); });
                 }
-                newRound = false;
                 console.log("Die Platzhalter werden erstellt");
                 break;
             case "middle":
@@ -410,7 +409,6 @@ var tictactoe;
                     showingRounds.appendChild(roundsProgress);
                     roundsProgress.max = 3;
                     roundsProgress.value += 1;
-                    newRound = true;
                     createPlaceholders(severity);
                 }
                 break;

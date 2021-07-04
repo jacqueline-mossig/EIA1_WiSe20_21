@@ -63,7 +63,6 @@ namespace tictactoe {
                     untakenDiv.addEventListener("touch", function (): void { playerTurn(i, game[i]); });
                 }
 
-                newRound = false;
                 console.log("Die Platzhalter werden erstellt");
                 break;
 
@@ -457,7 +456,6 @@ namespace tictactoe {
                     showingRounds.appendChild(roundsProgress);
                     roundsProgress.max = 3;
                     roundsProgress.value += 1;
-                    newRound = true;
                     createPlaceholders(severity);
                 }
                 break;
