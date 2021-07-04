@@ -8,12 +8,12 @@ var tictactoe;
     let existingPlaceholder = []; //Array für die wegfallenden Platzhalter
     let untakenDiv; //Platzalter, die zu Beginn erstellt werden
     let emptyDiv; //Platzhalter, die aus dem Array genommen werden
-    let pointsPlayer = 0; //Punkteanzahl des Spielers und Computers zu Beginn des Spieles
-    let pointsComputer = 0;
+    let pointsPlayer; //Punkteanzahl des Spielers und Computers zu Beginn des Spieles
+    let pointsComputer;
     let showingPointsPlayer; //zeigt die Punkte des Spielers
     let showingPointsComputer; //zeigt die Punkte des Computers
     let rounds; //zeigt die Rundenanzahl
-    let roundCounter = 1;
+    let roundCounter;
     let roundsProgress; //zeigt den visuellen Balken der Rundenanzahl
     let winner; //enthält die Informationen, wie das Spiel ausgeht
     let computerTurnNumber = 0; //Absicherung für den Zug des Computers
@@ -33,9 +33,10 @@ var tictactoe;
     function showPlaceholders(_userInput) {
         switch (severity) {
             case "easy":
-                // severityLength = 3;
                 let fieldEasy = document.getElementById("field");
                 fieldEasy.innerHTML = "";
+                game.splice(0, game.length);
+                existingPlaceholder.splice(0, existingPlaceholder.length);
                 for (let i = 0; i < 9; i++) {
                     untakenDiv = document.createElement("div");
                     untakenDiv.setAttribute("class", "placeholderEasy");
@@ -48,9 +49,10 @@ var tictactoe;
                 console.log("Die Platzhalter werden erstellt");
                 break;
             case "middle":
-                // severityLength = 4;
                 let fieldMiddle = document.getElementById("field");
                 fieldMiddle.innerHTML = "";
+                game.splice(0, game.length);
+                existingPlaceholder.splice(0, existingPlaceholder.length);
                 for (let i = 0; i < 16; i++) {
                     untakenDiv = document.createElement("div");
                     untakenDiv.setAttribute("class", "placeholderMiddle");
@@ -63,9 +65,10 @@ var tictactoe;
                 console.log("Die Platzhalter werden erstellt");
                 break;
             case "difficult":
-                // severityLength = 5;
                 let fieldDifficult = document.getElementById("field");
                 fieldDifficult.innerHTML = "";
+                game.splice(0, game.length);
+                existingPlaceholder.splice(0, existingPlaceholder.length);
                 for (let i = 0; i < 25; i++) {
                     untakenDiv = document.createElement("div");
                     untakenDiv.setAttribute("class", "placeholderDifficult");
@@ -85,12 +88,15 @@ var tictactoe;
     // Zeigt die Punkte des Spielers und des Computers zu Beginn des Spieles
     function showPoints() {
         severityLength = 1;
+        pointsPlayer = 0;
         showingPointsPlayer = document.getElementById("player");
         showingPointsPlayer.innerHTML = "Dein Punktestand: " + pointsPlayer;
         // console.log("Die Punkte des Spielers werden angezeigt.", pointsBeginning);
+        pointsComputer = 0;
         showingPointsComputer = document.getElementById("computer");
         showingPointsComputer.innerHTML = "Computer Punktestand: " + pointsComputer;
         // console.log("Die Punkte des Computers werden angezeigt.", pointsBeginning);
+        roundCounter = 1;
         rounds = document.getElementById("round");
         roundsProgress = document.createElement("progress");
         switch (severity) {
@@ -183,7 +189,7 @@ var tictactoe;
                         checkLinesEasy();
                     }
                     else {
-                        console.log("Runde geht weiter");
+                        console.log("Runde geht weiter 1");
                         // checkAllLines();
                     }
                 }
@@ -213,7 +219,7 @@ var tictactoe;
                         checkLinesMiddle();
                     }
                     else {
-                        console.log("Runde geht weiter");
+                        console.log("Runde geht weiter 1");
                         // checkAllLines();
                     }
                 }
@@ -246,7 +252,7 @@ var tictactoe;
                         checkLinesDifficult();
                     }
                     else {
-                        console.log("Runde geht weiter");
+                        console.log("Runde geht weiter 1");
                         // checkAllLines();
                     }
                 }
@@ -266,7 +272,6 @@ var tictactoe;
         }
         else {
             console.log("Runde geht weiter 2");
-            // checkAllLines();
         }
     }
     function checkLinesMiddle() {
@@ -301,7 +306,7 @@ var tictactoe;
     }
     // function checkAllLines(): void {
     //     for (let i: number = 0; i <= game.length; i++) {
-    //         if (!game[i].hasAttribute("taken")) {
+    //         if (game[i].getAttribute("player") || game[i].getAttribute("computer")) {
     //             console.log("Alle Platzhalter sind belegt");
     //             roundEnd();
     //         }
@@ -315,7 +320,7 @@ var tictactoe;
     function roundEnd() {
         severityLength += 1;
         roundCounter += 1;
-        roundsProgress.value += 1;
+        console.log(roundsProgress);
         switch (winner) {
             case "player":
                 //Spieler bekommt einen Punkt
@@ -338,35 +343,47 @@ var tictactoe;
         }
         switch (severity) {
             case "easy":
-                if (severityLength == 3) {
+                if (severityLength == 4) {
                     console.log("Spiel ist zu Ende");
                     gameEnd();
                 }
                 else {
                     console.log("Spiel geht weiter 3");
                     rounds.innerHTML = "Runde: " + roundCounter + "/3";
+                    roundsProgress.setAttribute("class", "test");
+                    rounds.appendChild(roundsProgress);
+                    roundsProgress.max = 3;
+                    roundsProgress.value += 1;
                     showPlaceholders(severity);
                 }
                 break;
             case "middle":
-                if (severityLength == 4) {
-                    console.log("Spiel ist zu Ende");
-                    // gameEnd();
-                }
-                else {
-                    console.log("Spiel geht weiter");
-                    rounds.innerHTML = "Runde: " + roundCounter + "/4";
-                    showPlaceholders(severity);
-                }
-                break;
-            case "difficult":
                 if (severityLength == 5) {
                     console.log("Spiel ist zu Ende");
                     // gameEnd();
                 }
                 else {
-                    console.log("Spiel geht weiter");
+                    console.log("Spiel geht weiter 3");
+                    rounds.innerHTML = "Runde: " + roundCounter + "/4";
+                    roundsProgress.setAttribute("class", "test");
+                    rounds.appendChild(roundsProgress);
+                    roundsProgress.max = 4;
+                    roundsProgress.value += 1;
+                    showPlaceholders(severity);
+                }
+                break;
+            case "difficult":
+                if (severityLength == 6) {
+                    console.log("Spiel ist zu Ende");
+                    // gameEnd();
+                }
+                else {
+                    console.log("Spiel geht weiter 3");
                     rounds.innerHTML = "Runde: " + roundCounter + "/5";
+                    roundsProgress.setAttribute("class", "test");
+                    rounds.appendChild(roundsProgress);
+                    roundsProgress.max = 5;
+                    roundsProgress.value += 1;
                     showPlaceholders(severity);
                 }
                 break;

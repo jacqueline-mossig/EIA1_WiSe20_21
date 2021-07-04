@@ -11,13 +11,13 @@ let existingPlaceholder: HTMLDivElement[] = [];         //Array für die wegfall
 let untakenDiv: HTMLDivElement;                         //Platzalter, die zu Beginn erstellt werden
 let emptyDiv: HTMLDivElement;                           //Platzhalter, die aus dem Array genommen werden
 
-let pointsPlayer: number = 0;                           //Punkteanzahl des Spielers und Computers zu Beginn des Spieles
-let pointsComputer: number = 0;
-let showingPointsPlayer: HTMLDivElement;                       //zeigt die Punkte des Spielers
-let showingPointsComputer: HTMLDivElement;                     //zeigt die Punkte des Computers
+let pointsPlayer: number;                               //Punkteanzahl des Spielers und Computers zu Beginn des Spieles
+let pointsComputer: number;
+let showingPointsPlayer: HTMLDivElement;                //zeigt die Punkte des Spielers
+let showingPointsComputer: HTMLDivElement;              //zeigt die Punkte des Computers
 
 let rounds: HTMLDivElement;                             //zeigt die Rundenanzahl
-let roundCounter: number = 1;
+let roundCounter: number;
 let roundsProgress: HTMLProgressElement;                //zeigt den visuellen Balken der Rundenanzahl
 
 let winner: string;                                     //enthält die Informationen, wie das Spiel ausgeht
@@ -43,10 +43,10 @@ function startGame(): void {
 function showPlaceholders(_userInput: string): void {
     switch (severity) { 
         case "easy":
-            // severityLength = 3;
-
             let fieldEasy: HTMLDivElement = <HTMLDivElement>document.getElementById("field");
             fieldEasy.innerHTML = "";
+            game.splice(0, game.length);
+            existingPlaceholder.splice(0, existingPlaceholder.length);
 
             for (let i: number = 0; i < 9; i++) {
             untakenDiv = document.createElement("div");
@@ -62,10 +62,10 @@ function showPlaceholders(_userInput: string): void {
             break;                   
         
         case "middle":
-            // severityLength = 4;
-
             let fieldMiddle: HTMLDivElement = <HTMLDivElement>document.getElementById("field");
             fieldMiddle.innerHTML = "";
+            game.splice(0, game.length);
+            existingPlaceholder.splice(0, existingPlaceholder.length);
 
             for (let i: number = 0; i < 16; i++) {
             untakenDiv = document.createElement("div");
@@ -81,10 +81,10 @@ function showPlaceholders(_userInput: string): void {
             break;
         
         case "difficult":
-            // severityLength = 5;
-
             let fieldDifficult: HTMLDivElement = <HTMLDivElement>document.getElementById("field");
             fieldDifficult.innerHTML = "";
+            game.splice(0, game.length);
+            existingPlaceholder.splice(0, existingPlaceholder.length);
 
             for (let i: number = 0; i < 25; i++) {
             untakenDiv = document.createElement("div");
@@ -109,14 +109,17 @@ function showPlaceholders(_userInput: string): void {
 function showPoints(): void {
     severityLength = 1;
 
+    pointsPlayer = 0;
     showingPointsPlayer = <HTMLDivElement>document.getElementById("player");
     showingPointsPlayer.innerHTML = "Dein Punktestand: " + pointsPlayer;
     // console.log("Die Punkte des Spielers werden angezeigt.", pointsBeginning);
 
+    pointsComputer = 0;
     showingPointsComputer = <HTMLDivElement>document.getElementById("computer");
     showingPointsComputer.innerHTML = "Computer Punktestand: " + pointsComputer;
     // console.log("Die Punkte des Computers werden angezeigt.", pointsBeginning);
 
+    roundCounter = 1;
     rounds = <HTMLDivElement>document.getElementById("round");
     roundsProgress = <HTMLProgressElement>document.createElement("progress");
 
@@ -226,8 +229,8 @@ function checkLinesForEasy(): void {
                 if (a.getAttribute("taken") && b.getAttribute("taken") && c.getAttribute("taken")) {
                     console.log("Reihe ist voll");
                     checkLinesEasy();
-            } else {
-                console.log("Runde geht weiter");
+                } else {
+                console.log("Runde geht weiter 1");
                 // checkAllLines();
             }
         }
@@ -258,7 +261,7 @@ function checkLinesForEasy(): void {
                     console.log("Reihe ist voll");
                     checkLinesMiddle();
             } else {
-                console.log("Runde geht weiter");
+                console.log("Runde geht weiter 1");
                 // checkAllLines();
             }
         }
@@ -292,15 +295,13 @@ function checkLinesForEasy(): void {
                 console.log("Reihe ist voll");
                 checkLinesDifficult();
                 } else {
-                console.log("Runde geht weiter");
+                console.log("Runde geht weiter 1");
                 // checkAllLines();
                 }
             }
             break;
     }
 }
-
-
 
 function checkLinesEasy(): void {
     if (a.getAttribute("player") && b.getAttribute("player") && c.getAttribute("player")) {
@@ -315,7 +316,6 @@ function checkLinesEasy(): void {
     }
     else {
     console.log("Runde geht weiter 2");
-    // checkAllLines();
     }
 }
 
@@ -353,7 +353,7 @@ function checkLinesDifficult(): void {
 
 // function checkAllLines(): void {
 //     for (let i: number = 0; i <= game.length; i++) {
-//         if (!game[i].hasAttribute("taken")) {
+//         if (game[i].getAttribute("player") || game[i].getAttribute("computer")) {
 //             console.log("Alle Platzhalter sind belegt");
 //             roundEnd();
 //         }
@@ -369,7 +369,7 @@ function roundEnd(): void {
     severityLength += 1;
     roundCounter += 1;
 
-    roundsProgress.value += 1;
+    console.log(roundsProgress);
     
     switch (winner) {     
         case "player":
@@ -396,37 +396,49 @@ function roundEnd(): void {
 
     switch (severity) {
         case "easy":
-            if (severityLength == 3) {
+            if (severityLength == 4) {
                 console.log("Spiel ist zu Ende");
                 gameEnd();
             }
             else {
                 console.log("Spiel geht weiter 3");
                 rounds.innerHTML = "Runde: " + roundCounter + "/3";
+                roundsProgress.setAttribute("class", "test");
+                rounds.appendChild(roundsProgress);
+                roundsProgress.max = 3;
+                roundsProgress.value += 1;
                 showPlaceholders(severity);
             }
             break;
         
         case "middle":
-            if (severityLength == 4) {
-                console.log("Spiel ist zu Ende");
-                // gameEnd();
-            }
-            else {
-                console.log("Spiel geht weiter");
-                rounds.innerHTML = "Runde: " + roundCounter + "/4";
-                showPlaceholders(severity);
-            }
-            break;
-
-        case "difficult":
             if (severityLength == 5) {
                 console.log("Spiel ist zu Ende");
                 // gameEnd();
             }
             else {
-                console.log("Spiel geht weiter");
+                console.log("Spiel geht weiter 3");
+                rounds.innerHTML = "Runde: " + roundCounter + "/4";
+                roundsProgress.setAttribute("class", "test");
+                rounds.appendChild(roundsProgress);
+                roundsProgress.max = 4;
+                roundsProgress.value += 1;
+                showPlaceholders(severity);
+            }
+            break;
+
+        case "difficult":
+            if (severityLength == 6) {
+                console.log("Spiel ist zu Ende");
+                // gameEnd();
+            }
+            else {
+                console.log("Spiel geht weiter 3");
                 rounds.innerHTML = "Runde: " + roundCounter + "/5";
+                roundsProgress.setAttribute("class", "test");
+                rounds.appendChild(roundsProgress);
+                roundsProgress.max = 5;
+                roundsProgress.value += 1;
                 showPlaceholders(severity);
                 }
             break;
