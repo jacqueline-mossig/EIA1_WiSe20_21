@@ -16,7 +16,6 @@ var tictactoe;
     let roundCounter;
     let roundsProgress; //zeigt den visuellen Balken der Rundenanzahl
     let winner; //enthält die Informationen, wie das Spiel ausgeht
-    let computerTurnNumber = 0; //Absicherung für den Zug des Computers
     let a;
     let b;
     let c;
@@ -40,6 +39,7 @@ var tictactoe;
                 for (let i = 0; i < 9; i++) {
                     untakenDiv = document.createElement("div");
                     untakenDiv.setAttribute("class", "placeholderEasy");
+                    untakenDiv.setAttribute("placeholder", "placeholder");
                     fieldEasy.appendChild(untakenDiv);
                     game.push(untakenDiv);
                     existingPlaceholder.push(untakenDiv);
@@ -102,21 +102,21 @@ var tictactoe;
         switch (severity) {
             case "easy":
                 rounds.innerHTML = "Runde: " + roundCounter + "/3";
-                roundsProgress.setAttribute("class", "test");
+                roundsProgress.setAttribute("class", "progress");
                 rounds.appendChild(roundsProgress);
                 roundsProgress.max = 3;
                 roundsProgress.value = 1;
                 break;
             case "middle":
                 rounds.innerHTML = "Runde: " + roundCounter + "/4";
-                roundsProgress.setAttribute("class", "test");
+                roundsProgress.setAttribute("class", "progress");
                 rounds.appendChild(roundsProgress);
                 roundsProgress.max = 4;
                 roundsProgress.value = 1;
                 break;
             case "difficult":
                 rounds.innerHTML = "Runde: " + roundCounter + "/5";
-                roundsProgress.setAttribute("class", "test");
+                roundsProgress.setAttribute("class", "progress");
                 rounds.appendChild(roundsProgress);
                 roundsProgress.max = 5;
                 roundsProgress.value = 1;
@@ -127,6 +127,7 @@ var tictactoe;
     // Dabei kann der Spieler eine seiner Spielkarten auf einen Platzhalter legen
     function playerTurn(_placeholderNumber, _placeholderDiv) {
         let playerCard = document.createElement("div");
+        console.log(emptyDiv, "emptyDiv");
         if (existingPlaceholder[_placeholderNumber] == emptyDiv) {
             console.log("Leider ist dieser Platzhalter schon belegt");
         }
@@ -137,6 +138,8 @@ var tictactoe;
             _placeholderDiv.appendChild(playerCard);
             game.splice(_placeholderNumber, 1, playerCard);
             existingPlaceholder[_placeholderNumber] = emptyDiv;
+            console.log("GRRRRRRRR", emptyDiv);
+            console.log("GGGGGGGGGGGGGGGG", existingPlaceholder);
             console.log("Spielstein von Spieler gelegt");
             setTimeout(checkLinesForEasy, 200);
             setTimeout(computerTurn, 500);
@@ -145,12 +148,13 @@ var tictactoe;
     // Regelt den Spielzug des Computers
     // Dabei legt der Computer zufällig eine seiner Spielkarten auf einen Platzhalter
     function computerTurn() {
+        let i = 0;
         let randomDiv;
         randomDiv = existingPlaceholder[Math.floor(Math.random() * existingPlaceholder.length)];
         do {
             randomDiv = existingPlaceholder[Math.floor(Math.random() * existingPlaceholder.length)];
-            computerTurnNumber++;
-        } while (randomDiv == emptyDiv && computerTurnNumber < 15);
+            i++;
+        } while (randomDiv == emptyDiv && i < 15);
         let computerCard = document.createElement("div");
         computerCard.setAttribute("class", "cardComputer");
         computerCard.setAttribute("taken", "taken");
@@ -190,7 +194,7 @@ var tictactoe;
                     }
                     else {
                         console.log("Runde geht weiter 1");
-                        // checkAllLines();
+                        checkAllLines();
                     }
                 }
                 break;
@@ -213,7 +217,7 @@ var tictactoe;
                     b = game[winCondition[1]];
                     c = game[winCondition[2]];
                     d = game[winCondition[3]];
-                    console.log("test", a, b, c, d);
+                    // console.log("test", a, b, c, d);
                     if (a.getAttribute("taken") && b.getAttribute("taken") && c.getAttribute("taken") && d.getAttribute("taken")) {
                         console.log("Reihe ist voll");
                         checkLinesMiddle();
@@ -239,7 +243,7 @@ var tictactoe;
                     [0, 6, 12, 18, 24],
                     [4, 8, 12, 16, 20]
                 ];
-                for (let i = 0; i <= 20; i++) {
+                for (let i = 0; i <= 11; i++) {
                     let winCondition = winningConditionsDifficult[i];
                     a = game[winCondition[0]];
                     b = game[winCondition[1]];
@@ -304,17 +308,17 @@ var tictactoe;
             console.log("Runde geht weiter");
         }
     }
-    // function checkAllLines(): void {
-    //     for (let i: number = 0; i <= game.length; i++) {
-    //         if (game[i].getAttribute("player") || game[i].getAttribute("computer")) {
-    //             console.log("Alle Platzhalter sind belegt");
-    //             roundEnd();
-    //         }
-    //         else {
-    //             console.log("Spiel geht weiter, da nicht alle Platzhalter belegt sind");
-    //         }
-    //     }
-    // }
+    function checkAllLines() {
+        for (let i = 0; i == game.length; i++) {
+            if (game[i].getAttribute("player") || game[i].getAttribute("computer")) {
+                console.log("Alle Platzhalter sind belegt");
+                roundEnd();
+            }
+            else {
+                console.log("Spiel geht weiter, da nicht alle Platzhalter belegt sind");
+            }
+        }
+    }
     // Regelt das Ende einer Runde
     // Dabei wird ausgewertet, wer gewonnen hat und dementsprechend ein Punkt vergeben und eine Nachricht an den Spieler gesendet
     function roundEnd() {
@@ -350,7 +354,7 @@ var tictactoe;
                 else {
                     console.log("Spiel geht weiter 3");
                     rounds.innerHTML = "Runde: " + roundCounter + "/3";
-                    roundsProgress.setAttribute("class", "test");
+                    roundsProgress.setAttribute("class", "progress");
                     rounds.appendChild(roundsProgress);
                     roundsProgress.max = 3;
                     roundsProgress.value += 1;
@@ -365,7 +369,7 @@ var tictactoe;
                 else {
                     console.log("Spiel geht weiter 3");
                     rounds.innerHTML = "Runde: " + roundCounter + "/4";
-                    roundsProgress.setAttribute("class", "test");
+                    roundsProgress.setAttribute("class", "progress");
                     rounds.appendChild(roundsProgress);
                     roundsProgress.max = 4;
                     roundsProgress.value += 1;
@@ -380,7 +384,7 @@ var tictactoe;
                 else {
                     console.log("Spiel geht weiter 3");
                     rounds.innerHTML = "Runde: " + roundCounter + "/5";
-                    roundsProgress.setAttribute("class", "test");
+                    roundsProgress.setAttribute("class", "progress");
                     rounds.appendChild(roundsProgress);
                     roundsProgress.max = 5;
                     roundsProgress.value += 1;

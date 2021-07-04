@@ -22,8 +22,6 @@ let roundsProgress: HTMLProgressElement;                //zeigt den visuellen Ba
 
 let winner: string;                                     //enthält die Informationen, wie das Spiel ausgeht
 
-let computerTurnNumber: number = 0;                     //Absicherung für den Zug des Computers
-
 let a: HTMLDivElement;
 let b: HTMLDivElement;
 let c: HTMLDivElement;
@@ -51,6 +49,7 @@ function showPlaceholders(_userInput: string): void {
             for (let i: number = 0; i < 9; i++) {
             untakenDiv = document.createElement("div");
             untakenDiv.setAttribute("class", "placeholderEasy");
+            untakenDiv.setAttribute("placeholder", "placeholder");
             fieldEasy.appendChild(untakenDiv);
             game.push(untakenDiv);
             existingPlaceholder.push(untakenDiv);
@@ -127,7 +126,7 @@ function showPoints(): void {
         case "easy":
             rounds.innerHTML = "Runde: " + roundCounter + "/3";
 
-            roundsProgress.setAttribute("class", "test");
+            roundsProgress.setAttribute("class", "progress");
             rounds.appendChild(roundsProgress);
             roundsProgress.max = 3;
             roundsProgress.value = 1;
@@ -135,7 +134,7 @@ function showPoints(): void {
         case "middle":
             rounds.innerHTML = "Runde: " + roundCounter + "/4";
 
-            roundsProgress.setAttribute("class", "test");
+            roundsProgress.setAttribute("class", "progress");
             rounds.appendChild(roundsProgress);
             roundsProgress.max = 4;
             roundsProgress.value = 1;
@@ -143,7 +142,7 @@ function showPoints(): void {
         case "difficult":
             rounds.innerHTML = "Runde: " + roundCounter + "/5";
 
-            roundsProgress.setAttribute("class", "test");
+            roundsProgress.setAttribute("class", "progress");
             rounds.appendChild(roundsProgress);
             roundsProgress.max = 5;
             roundsProgress.value = 1;
@@ -155,7 +154,7 @@ function showPoints(): void {
 // Dabei kann der Spieler eine seiner Spielkarten auf einen Platzhalter legen
 function playerTurn(_placeholderNumber: number, _placeholderDiv: HTMLDivElement): void {
     let playerCard: HTMLDivElement = <HTMLDivElement>document.createElement("div");
-    
+    console.log(emptyDiv, "emptyDiv");
     if (existingPlaceholder[_placeholderNumber] == emptyDiv) {
         console.log("Leider ist dieser Platzhalter schon belegt");
     } else {
@@ -166,6 +165,8 @@ function playerTurn(_placeholderNumber: number, _placeholderDiv: HTMLDivElement)
     
         game.splice(_placeholderNumber, 1, playerCard);
         existingPlaceholder[_placeholderNumber] = emptyDiv;
+        console.log("GRRRRRRRR", emptyDiv);
+        console.log("GGGGGGGGGGGGGGGG", existingPlaceholder);
         
         console.log("Spielstein von Spieler gelegt");
 
@@ -177,14 +178,15 @@ function playerTurn(_placeholderNumber: number, _placeholderDiv: HTMLDivElement)
 // Regelt den Spielzug des Computers
 // Dabei legt der Computer zufällig eine seiner Spielkarten auf einen Platzhalter
 function computerTurn(): void {
+    let i: number = 0;    
     let randomDiv: HTMLDivElement;
     randomDiv = existingPlaceholder[Math.floor(Math.random() * existingPlaceholder.length)];
 
     do {
         randomDiv = existingPlaceholder[Math.floor(Math.random() * existingPlaceholder.length)];
-        computerTurnNumber++;
+        i++;
     }
-    while (randomDiv == emptyDiv && computerTurnNumber < 15);
+    while (randomDiv == emptyDiv && i < 15);
     
     let computerCard: HTMLDivElement = <HTMLDivElement>document.createElement("div");
     computerCard.setAttribute("class", "cardComputer");
@@ -231,7 +233,7 @@ function checkLinesForEasy(): void {
                     checkLinesEasy();
                 } else {
                 console.log("Runde geht weiter 1");
-                // checkAllLines();
+                checkAllLines();
             }
         }
         break;
@@ -255,7 +257,7 @@ function checkLinesForEasy(): void {
             b = game[winCondition[1]];
             c = game[winCondition[2]];
             d = game[winCondition[3]];
-            console.log("test", a, b, c, d);
+            // console.log("test", a, b, c, d);
                 
             if (a.getAttribute("taken") && b.getAttribute("taken") && c.getAttribute("taken") && d.getAttribute("taken")) {
                     console.log("Reihe ist voll");
@@ -282,7 +284,7 @@ function checkLinesForEasy(): void {
                 [4, 8, 12, 16, 20]
                 ];
         
-            for (let i: number = 0; i <= 20; i++) {
+            for (let i: number = 0; i <= 11; i++) {
                 let winCondition: number[] = winningConditionsDifficult[i];
                 a = game[winCondition[0]];
                 b = game[winCondition[1]];
@@ -351,17 +353,17 @@ function checkLinesDifficult(): void {
     }
 }
 
-// function checkAllLines(): void {
-//     for (let i: number = 0; i <= game.length; i++) {
-//         if (game[i].getAttribute("player") || game[i].getAttribute("computer")) {
-//             console.log("Alle Platzhalter sind belegt");
-//             roundEnd();
-//         }
-//         else {
-//             console.log("Spiel geht weiter, da nicht alle Platzhalter belegt sind");
-//         }
-//     }
-// }
+function checkAllLines(): void {
+    for (let i: number = 0; i == game.length; i++) {
+        if (game[i].getAttribute("player") || game[i].getAttribute("computer")) {
+            console.log("Alle Platzhalter sind belegt");
+            roundEnd();
+        }
+        else {
+            console.log("Spiel geht weiter, da nicht alle Platzhalter belegt sind");
+        }
+    }
+}
 
 // Regelt das Ende einer Runde
 // Dabei wird ausgewertet, wer gewonnen hat und dementsprechend ein Punkt vergeben und eine Nachricht an den Spieler gesendet
@@ -403,7 +405,7 @@ function roundEnd(): void {
             else {
                 console.log("Spiel geht weiter 3");
                 rounds.innerHTML = "Runde: " + roundCounter + "/3";
-                roundsProgress.setAttribute("class", "test");
+                roundsProgress.setAttribute("class", "progress");
                 rounds.appendChild(roundsProgress);
                 roundsProgress.max = 3;
                 roundsProgress.value += 1;
@@ -419,7 +421,7 @@ function roundEnd(): void {
             else {
                 console.log("Spiel geht weiter 3");
                 rounds.innerHTML = "Runde: " + roundCounter + "/4";
-                roundsProgress.setAttribute("class", "test");
+                roundsProgress.setAttribute("class", "progress");
                 rounds.appendChild(roundsProgress);
                 roundsProgress.max = 4;
                 roundsProgress.value += 1;
@@ -435,7 +437,7 @@ function roundEnd(): void {
             else {
                 console.log("Spiel geht weiter 3");
                 rounds.innerHTML = "Runde: " + roundCounter + "/5";
-                roundsProgress.setAttribute("class", "test");
+                roundsProgress.setAttribute("class", "progress");
                 rounds.appendChild(roundsProgress);
                 roundsProgress.max = 5;
                 roundsProgress.value += 1;
