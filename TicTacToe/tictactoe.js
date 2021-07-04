@@ -7,13 +7,14 @@ var tictactoe;
     let game = []; //Array für die Auswerung des Spielefeldes
     let existingPlaceholder = []; //Array für die wegfallenden Platzhalter
     let untakenDiv; //Platzalter, die zu Beginn erstellt werden
-    let emtpyDiv; //Platzhalter, die aus dem Array genommen werden
-    let pointsBeginning = 0; //Punkteanzahl des Spielers und Computers zu Beginn des Spieles
-    let pointsToGet = 1; //dient dem Erhöhen der Punkteanzahl
-    let pointsPlayer; //zeigt die Punkte des Spielers
-    let pointsComputer; //zeigt die Punkte des Computers
-    let pointsRound; //zeigt die Rundenanzahl
-    let showRound; //zeigt den visuellen Balken der Rundenanzahl
+    let emptyDiv; //Platzhalter, die aus dem Array genommen werden
+    let pointsPlayer = 0; //Punkteanzahl des Spielers und Computers zu Beginn des Spieles
+    let pointsComputer = 0;
+    let showingPointsPlayer; //zeigt die Punkte des Spielers
+    let showingPointsComputer; //zeigt die Punkte des Computers
+    let rounds; //zeigt die Rundenanzahl
+    let roundCounter = 1;
+    let roundsProgress; //zeigt den visuellen Balken der Rundenanzahl
     let winner; //enthält die Informationen, wie das Spiel ausgeht
     let computerTurnNumber = 0; //Absicherung für den Zug des Computers
     let a;
@@ -83,30 +84,36 @@ var tictactoe;
     }
     // Zeigt die Punkte des Spielers und des Computers zu Beginn des Spieles
     function showPoints() {
-        pointsPlayer = document.getElementById("player");
-        pointsPlayer.innerHTML = "Dein Punktestand: " + pointsBeginning;
-        // console.log("Die Punkte des Spielers werden angezeigt.", pointsBeginning);
-        pointsComputer = document.getElementById("computer");
-        pointsComputer.innerHTML = "Computer Punktestand: " + pointsBeginning;
-        // console.log("Die Punkte des Computers werden angezeigt.", pointsBeginning);
-        pointsRound = document.getElementById("round");
-        pointsRound.innerHTML = "Runde: " + "1";
-        showRound = document.createElement("progress");
-        showRound.setAttribute("class", "test");
-        pointsRound.appendChild(showRound);
         severityLength = 1;
+        showingPointsPlayer = document.getElementById("player");
+        showingPointsPlayer.innerHTML = "Dein Punktestand: " + pointsPlayer;
+        // console.log("Die Punkte des Spielers werden angezeigt.", pointsBeginning);
+        showingPointsComputer = document.getElementById("computer");
+        showingPointsComputer.innerHTML = "Computer Punktestand: " + pointsComputer;
+        // console.log("Die Punkte des Computers werden angezeigt.", pointsBeginning);
+        rounds = document.getElementById("round");
+        roundsProgress = document.createElement("progress");
         switch (severity) {
             case "easy":
-                showRound.max = 3;
-                showRound.value = 1;
+                rounds.innerHTML = "Runde: " + roundCounter + "/3";
+                roundsProgress.setAttribute("class", "test");
+                rounds.appendChild(roundsProgress);
+                roundsProgress.max = 3;
+                roundsProgress.value = 1;
                 break;
             case "middle":
-                showRound.max = 4;
-                showRound.value = 1;
+                rounds.innerHTML = "Runde: " + roundCounter + "/4";
+                roundsProgress.setAttribute("class", "test");
+                rounds.appendChild(roundsProgress);
+                roundsProgress.max = 4;
+                roundsProgress.value = 1;
                 break;
             case "difficult":
-                showRound.max = 5;
-                showRound.value = 1;
+                rounds.innerHTML = "Runde: " + roundCounter + "/5";
+                roundsProgress.setAttribute("class", "test");
+                rounds.appendChild(roundsProgress);
+                roundsProgress.max = 5;
+                roundsProgress.value = 1;
                 break;
         }
     }
@@ -114,7 +121,7 @@ var tictactoe;
     // Dabei kann der Spieler eine seiner Spielkarten auf einen Platzhalter legen
     function playerTurn(_placeholderNumber, _placeholderDiv) {
         let playerCard = document.createElement("div");
-        if (existingPlaceholder[_placeholderNumber] == emtpyDiv) {
+        if (existingPlaceholder[_placeholderNumber] == emptyDiv) {
             console.log("Leider ist dieser Platzhalter schon belegt");
         }
         else {
@@ -123,7 +130,7 @@ var tictactoe;
             playerCard.setAttribute("player", "player");
             _placeholderDiv.appendChild(playerCard);
             game.splice(_placeholderNumber, 1, playerCard);
-            existingPlaceholder[_placeholderNumber] = emtpyDiv;
+            existingPlaceholder[_placeholderNumber] = emptyDiv;
             console.log("Spielstein von Spieler gelegt");
             setTimeout(checkLinesForEasy, 200);
             setTimeout(computerTurn, 500);
@@ -134,10 +141,10 @@ var tictactoe;
     function computerTurn() {
         let randomDiv;
         randomDiv = existingPlaceholder[Math.floor(Math.random() * existingPlaceholder.length)];
-        while (randomDiv == emtpyDiv && computerTurnNumber < 15) {
+        do {
             randomDiv = existingPlaceholder[Math.floor(Math.random() * existingPlaceholder.length)];
             computerTurnNumber++;
-        }
+        } while (randomDiv == emptyDiv && computerTurnNumber < 15);
         let computerCard = document.createElement("div");
         computerCard.setAttribute("class", "cardComputer");
         computerCard.setAttribute("taken", "taken");
@@ -146,7 +153,7 @@ var tictactoe;
         let indexOfTakenDiv;
         indexOfTakenDiv = game.indexOf(randomDiv);
         game.splice(indexOfTakenDiv, 1, computerCard);
-        existingPlaceholder[indexOfTakenDiv] = emtpyDiv;
+        existingPlaceholder[indexOfTakenDiv] = emptyDiv;
         console.log("Spielstein von Computer gelegt");
         setTimeout(checkLinesForEasy, 200);
     }
@@ -226,7 +233,7 @@ var tictactoe;
                     [0, 6, 12, 18, 24],
                     [4, 8, 12, 16, 20]
                 ];
-                for (let i = 0; i <= 11; i++) {
+                for (let i = 0; i <= 20; i++) {
                     let winCondition = winningConditionsDifficult[i];
                     a = game[winCondition[0]];
                     b = game[winCondition[1]];
@@ -306,28 +313,21 @@ var tictactoe;
     // Regelt das Ende einer Runde
     // Dabei wird ausgewertet, wer gewonnen hat und dementsprechend ein Punkt vergeben und eine Nachricht an den Spieler gesendet
     function roundEnd() {
-        pointsRound.innerHTML = "Runde: ";
-        pointsBeginning += pointsToGet;
-        pointsRound.innerHTML += +pointsBeginning;
-        showRound = document.createElement("progress");
-        showRound.setAttribute("class", "test");
-        pointsRound.appendChild(showRound);
-        showRound.value += 1;
         severityLength += 1;
+        roundCounter += 1;
+        roundsProgress.value += 1;
         switch (winner) {
             case "player":
                 //Spieler bekommt einen Punkt
-                pointsPlayer.innerHTML = "Dein Punktestand: ";
-                pointsBeginning += pointsToGet;
-                pointsPlayer.innerHTML += pointsBeginning;
+                pointsPlayer += 1;
+                showingPointsPlayer.innerHTML = "Dein Punktestand: " + pointsPlayer;
                 //Der Spieler bekommt eine Nachricht
                 window.alert("Du hast diese Runde gewonnen.");
                 break;
             case "computer":
                 //Computer bekommt einen Punkt
-                pointsComputer.innerHTML = "Computer Punktestand: ";
-                pointsBeginning += pointsToGet;
-                pointsComputer.innerHTML += pointsBeginning;
+                pointsComputer += 1;
+                showingPointsComputer.innerHTML = "Dein Punktestand: " + pointsComputer;
                 //Der Spieler bekommt eine Nachricht
                 window.alert("Der Computer hat diese Runde gewonnen.");
                 break;
@@ -344,6 +344,7 @@ var tictactoe;
                 }
                 else {
                     console.log("Spiel geht weiter 3");
+                    rounds.innerHTML = "Runde: " + roundCounter + "/3";
                     showPlaceholders(severity);
                 }
                 break;
@@ -354,6 +355,7 @@ var tictactoe;
                 }
                 else {
                     console.log("Spiel geht weiter");
+                    rounds.innerHTML = "Runde: " + roundCounter + "/4";
                     showPlaceholders(severity);
                 }
                 break;
@@ -364,6 +366,7 @@ var tictactoe;
                 }
                 else {
                     console.log("Spiel geht weiter");
+                    rounds.innerHTML = "Runde: " + roundCounter + "/5";
                     showPlaceholders(severity);
                 }
                 break;
@@ -374,15 +377,15 @@ var tictactoe;
     function gameEnd() {
         if (pointsPlayer > pointsComputer) {
             window.alert("Du hast dieses Spiel gewonnen!");
-            setTimeout(startGame, 500);
+            startGame();
         }
         else if (pointsPlayer < pointsComputer) {
             window.alert("Der Computer hat dieses Spiel gewonnen!");
-            setTimeout(startGame, 500);
+            startGame();
         }
         else {
-            window.alert("Dieses Spiel geht unentschieden aus!");
-            setTimeout(startGame, 500);
+            window.alert("Es ist unentschieden!");
+            startGame();
         }
     }
 })(tictactoe || (tictactoe = {}));

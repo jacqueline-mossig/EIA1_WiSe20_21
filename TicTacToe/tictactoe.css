@@ -59,10 +59,10 @@ p, #computer, #player, #round{
     background-color: #333333;
     border: thin solid #ffffff;
     margin-top: 21%;
-    margin-left: 79%;
+    margin-left: 76.5%;
     padding: 10px;
     height: 70px;
-    width: 10%;
+    width: 15%;
 }
 
 .test {

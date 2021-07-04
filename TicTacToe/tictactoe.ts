@@ -9,14 +9,16 @@ let game: HTMLDivElement[] = [];                        //Array für die Ausweru
 let existingPlaceholder: HTMLDivElement[] = [];         //Array für die wegfallenden Platzhalter
 
 let untakenDiv: HTMLDivElement;                         //Platzalter, die zu Beginn erstellt werden
-let emtpyDiv: HTMLDivElement;                           //Platzhalter, die aus dem Array genommen werden
+let emptyDiv: HTMLDivElement;                           //Platzhalter, die aus dem Array genommen werden
 
-let pointsBeginning: number = 0;                        //Punkteanzahl des Spielers und Computers zu Beginn des Spieles
-let pointsToGet: number = 1;                            //dient dem Erhöhen der Punkteanzahl
-let pointsPlayer: HTMLDivElement;                       //zeigt die Punkte des Spielers
-let pointsComputer: HTMLDivElement;                     //zeigt die Punkte des Computers
-let pointsRound: HTMLDivElement;                        //zeigt die Rundenanzahl
-let showRound: HTMLProgressElement;                     //zeigt den visuellen Balken der Rundenanzahl
+let pointsPlayer: number = 0;                           //Punkteanzahl des Spielers und Computers zu Beginn des Spieles
+let pointsComputer: number = 0;
+let showingPointsPlayer: HTMLDivElement;                       //zeigt die Punkte des Spielers
+let showingPointsComputer: HTMLDivElement;                     //zeigt die Punkte des Computers
+
+let rounds: HTMLDivElement;                             //zeigt die Rundenanzahl
+let roundCounter: number = 1;
+let roundsProgress: HTMLProgressElement;                //zeigt den visuellen Balken der Rundenanzahl
 
 let winner: string;                                     //enthält die Informationen, wie das Spiel ausgeht
 
@@ -105,35 +107,43 @@ function showPlaceholders(_userInput: string): void {
 
 // Zeigt die Punkte des Spielers und des Computers zu Beginn des Spieles
 function showPoints(): void {
-    pointsPlayer = <HTMLDivElement>document.getElementById("player");
-    pointsPlayer.innerHTML = "Dein Punktestand: " + pointsBeginning;
+    severityLength = 1;
+
+    showingPointsPlayer = <HTMLDivElement>document.getElementById("player");
+    showingPointsPlayer.innerHTML = "Dein Punktestand: " + pointsPlayer;
     // console.log("Die Punkte des Spielers werden angezeigt.", pointsBeginning);
 
-    pointsComputer = <HTMLDivElement>document.getElementById("computer");
-    pointsComputer.innerHTML = "Computer Punktestand: " + pointsBeginning;
+    showingPointsComputer = <HTMLDivElement>document.getElementById("computer");
+    showingPointsComputer.innerHTML = "Computer Punktestand: " + pointsComputer;
     // console.log("Die Punkte des Computers werden angezeigt.", pointsBeginning);
 
-    pointsRound = <HTMLDivElement>document.getElementById("round");
-    pointsRound.innerHTML = "Runde: " + "1";
-
-    showRound = <HTMLProgressElement>document.createElement("progress");
-    showRound.setAttribute("class", "test");
-    pointsRound.appendChild(showRound);
-
-    severityLength = 1;
+    rounds = <HTMLDivElement>document.getElementById("round");
+    roundsProgress = <HTMLProgressElement>document.createElement("progress");
 
     switch (severity) { 
         case "easy":
-            showRound.max = 3;
-            showRound.value = 1;
+            rounds.innerHTML = "Runde: " + roundCounter + "/3";
+
+            roundsProgress.setAttribute("class", "test");
+            rounds.appendChild(roundsProgress);
+            roundsProgress.max = 3;
+            roundsProgress.value = 1;
             break;  
         case "middle":
-            showRound.max = 4;
-            showRound.value = 1;
+            rounds.innerHTML = "Runde: " + roundCounter + "/4";
+
+            roundsProgress.setAttribute("class", "test");
+            rounds.appendChild(roundsProgress);
+            roundsProgress.max = 4;
+            roundsProgress.value = 1;
             break;
         case "difficult":
-            showRound.max = 5;
-            showRound.value = 1;
+            rounds.innerHTML = "Runde: " + roundCounter + "/5";
+
+            roundsProgress.setAttribute("class", "test");
+            rounds.appendChild(roundsProgress);
+            roundsProgress.max = 5;
+            roundsProgress.value = 1;
             break;
 }
 }
@@ -143,7 +153,7 @@ function showPoints(): void {
 function playerTurn(_placeholderNumber: number, _placeholderDiv: HTMLDivElement): void {
     let playerCard: HTMLDivElement = <HTMLDivElement>document.createElement("div");
     
-    if (existingPlaceholder[_placeholderNumber] == emtpyDiv) {
+    if (existingPlaceholder[_placeholderNumber] == emptyDiv) {
         console.log("Leider ist dieser Platzhalter schon belegt");
     } else {
         playerCard.setAttribute("class", "cardPlayer");
@@ -152,7 +162,7 @@ function playerTurn(_placeholderNumber: number, _placeholderDiv: HTMLDivElement)
         _placeholderDiv.appendChild(playerCard);
     
         game.splice(_placeholderNumber, 1, playerCard);
-        existingPlaceholder[_placeholderNumber] = emtpyDiv;
+        existingPlaceholder[_placeholderNumber] = emptyDiv;
         
         console.log("Spielstein von Spieler gelegt");
 
@@ -167,10 +177,11 @@ function computerTurn(): void {
     let randomDiv: HTMLDivElement;
     randomDiv = existingPlaceholder[Math.floor(Math.random() * existingPlaceholder.length)];
 
-    while (randomDiv == emtpyDiv && computerTurnNumber < 15) {
+    do {
         randomDiv = existingPlaceholder[Math.floor(Math.random() * existingPlaceholder.length)];
         computerTurnNumber++;
     }
+    while (randomDiv == emptyDiv && computerTurnNumber < 15);
     
     let computerCard: HTMLDivElement = <HTMLDivElement>document.createElement("div");
     computerCard.setAttribute("class", "cardComputer");
@@ -182,7 +193,7 @@ function computerTurn(): void {
     indexOfTakenDiv = game.indexOf(randomDiv);
 
     game.splice(indexOfTakenDiv, 1, computerCard);
-    existingPlaceholder[indexOfTakenDiv] = emtpyDiv;
+    existingPlaceholder[indexOfTakenDiv] = emptyDiv;
 
     console.log("Spielstein von Computer gelegt");
 
@@ -268,7 +279,7 @@ function checkLinesForEasy(): void {
                 [4, 8, 12, 16, 20]
                 ];
         
-            for (let i: number = 0; i <= 11; i++) {
+            for (let i: number = 0; i <= 20; i++) {
                 let winCondition: number[] = winningConditionsDifficult[i];
                 a = game[winCondition[0]];
                 b = game[winCondition[1]];
@@ -355,33 +366,24 @@ function checkLinesDifficult(): void {
 // Regelt das Ende einer Runde
 // Dabei wird ausgewertet, wer gewonnen hat und dementsprechend ein Punkt vergeben und eine Nachricht an den Spieler gesendet
 function roundEnd(): void {
-    pointsRound.innerHTML = "Runde: ";
-    pointsBeginning += pointsToGet; 
-    pointsRound.innerHTML += + pointsBeginning;
-
-    showRound = <HTMLProgressElement>document.createElement("progress");
-    showRound.setAttribute("class", "test");
-    pointsRound.appendChild(showRound);
-    showRound.value += 1;
     severityLength += 1;
+    roundCounter += 1;
+
+    roundsProgress.value += 1;
     
     switch (winner) {     
         case "player":
             //Spieler bekommt einen Punkt
-            pointsPlayer.innerHTML = "Dein Punktestand: ";
-            pointsBeginning += pointsToGet; 
-            pointsPlayer.innerHTML += pointsBeginning;
-            
+            pointsPlayer += 1; 
+            showingPointsPlayer.innerHTML = "Dein Punktestand: " + pointsPlayer;
             //Der Spieler bekommt eine Nachricht
             window.alert("Du hast diese Runde gewonnen.");
             break;
         
         case "computer":
             //Computer bekommt einen Punkt
-            pointsComputer.innerHTML = "Computer Punktestand: ";
-            pointsBeginning += pointsToGet; 
-            pointsComputer.innerHTML += pointsBeginning;
-            
+            pointsComputer += 1; 
+            showingPointsComputer.innerHTML = "Dein Punktestand: " + pointsComputer;
             //Der Spieler bekommt eine Nachricht
             window.alert("Der Computer hat diese Runde gewonnen.");
             break;
@@ -400,6 +402,7 @@ function roundEnd(): void {
             }
             else {
                 console.log("Spiel geht weiter 3");
+                rounds.innerHTML = "Runde: " + roundCounter + "/3";
                 showPlaceholders(severity);
             }
             break;
@@ -411,6 +414,7 @@ function roundEnd(): void {
             }
             else {
                 console.log("Spiel geht weiter");
+                rounds.innerHTML = "Runde: " + roundCounter + "/4";
                 showPlaceholders(severity);
             }
             break;
@@ -422,6 +426,7 @@ function roundEnd(): void {
             }
             else {
                 console.log("Spiel geht weiter");
+                rounds.innerHTML = "Runde: " + roundCounter + "/5";
                 showPlaceholders(severity);
                 }
             break;
@@ -433,15 +438,15 @@ function roundEnd(): void {
 function gameEnd(): void {
     if (pointsPlayer > pointsComputer) {
         window.alert("Du hast dieses Spiel gewonnen!");
-        setTimeout(startGame, 500);
+        startGame();
     }
     else if (pointsPlayer < pointsComputer) {
         window.alert("Der Computer hat dieses Spiel gewonnen!");
-        setTimeout(startGame, 500);
+        startGame();
     }
     else {
-        window.alert("Dieses Spiel geht unentschieden aus!");
-        setTimeout(startGame, 500);
+        window.alert("Es ist unentschieden!");
+        startGame();
     }
 }
 }
