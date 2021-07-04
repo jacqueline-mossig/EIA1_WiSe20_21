@@ -7,7 +7,7 @@ body{
 
 main{
     border: thin solid #ffffff;
-    clear:both;
+    clear: both;
     padding-top: 3%;
     padding-bottom: 3%;
 }
@@ -34,7 +34,7 @@ p, #computer, #player, #round{
 }
 
 #computer, #player{
-    clear:both;
+    clear: both;
     background-color: #333333;
     border: thin solid #ffffff;
     margin-left: 4.3%;
